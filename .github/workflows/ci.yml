@@ -40,4 +40,4 @@ jobs:
         run: |
           curl --fail --location https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip --output /tmp/swiftformat.zip
           unzip -q /tmp/swiftformat.zip -d /tmp/tide-swiftformat
-      - run: /tmp/tide-swiftformat/swiftformat --lint Sources Tests Examples Package.swift
+      - run: /tmp/tide-swiftformat/swiftformat Sources Tests Examples Package.swift --lint
