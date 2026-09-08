@@ -1,0 +1,43 @@
+name: CI
+on:
+  push:
+    branches: [main, 'codex/**']
+  pull_request:
+permissions:
+  contents: read
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  swift-6-baseline:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select Swift 6.0 toolchain
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
+      - run: bash scripts/verify.sh build 'generic/platform=iOS Simulator'
+  simulator:
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        device: ['iPhone 17 Pro', 'iPad Pro 11-inch (M5)']
+    steps:
+      - uses: actions/checkout@v4
+      - name: Select current stable Xcode
+        run: sudo xcode-select -s /Applications/Xcode_26.6.app
+      - run: bash scripts/verify.sh test 'platform=iOS Simulator,name=${{ matrix.device }},OS=latest'
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: results-${{ matrix.device }}
+          path: .build/DerivedData/Logs/Test/*.xcresult
+  format:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned SwiftFormat
+        run: |
+          curl --fail --location https://github.com/nicklockwood/SwiftFormat/releases/download/0.61.1/swiftformat.zip --output /tmp/swiftformat.zip
+          unzip -q /tmp/swiftformat.zip -d /tmp/tide-swiftformat
+      - run: /tmp/tide-swiftformat/swiftformat --lint Sources Tests Examples Package.swift
