@@ -54,8 +54,13 @@ public struct RefreshConfiguration: Sendable {
         self.shortContentPageLimit = shortContentPageLimit
     }
 
-    var validHeaderHeight: CGFloat { headerHeight.isFinite && headerHeight > 0 ? headerHeight : 60 }
-    var validFooterHeight: CGFloat { footerHeight.isFinite && footerHeight > 0 ? footerHeight : 44 }
+    var validHeaderHeight: CGFloat {
+        headerHeight.isFinite && headerHeight > 0 ? headerHeight : 60
+    }
+
+    var validFooterHeight: CGFloat {
+        footerHeight.isFinite && footerHeight > 0 ? footerHeight : 44
+    }
 }
 
 /// Customizable, localized status labels. Defaults follow the application's language.

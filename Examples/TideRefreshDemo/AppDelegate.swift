@@ -1,5 +1,5 @@
-import UIKit
 import TideRefresh
+import UIKit
 
 @main
 @MainActor

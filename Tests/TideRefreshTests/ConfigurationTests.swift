@@ -1,5 +1,5 @@
-import XCTest
 @testable import TideRefresh
+import XCTest
 
 final class ConfigurationTests: XCTestCase {
     func testInvalidGeometryUsesDefaults() {
