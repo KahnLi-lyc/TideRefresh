@@ -22,7 +22,9 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
            arguments.indices.contains(index + 1),
            let mode = DemoMode(rawValue: arguments[index + 1])
         {
-            navigation.setViewControllers([DemoViewController(), DemoListViewController(mode: mode)], animated: false)
+            let controller: UIViewController = mode == .network
+                ? NetworkDemoViewController() : DemoListViewController(mode: mode)
+            navigation.setViewControllers([DemoViewController(), controller], animated: false)
         }
         window.rootViewController = navigation
         window.makeKeyAndVisible()

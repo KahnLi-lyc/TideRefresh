@@ -134,9 +134,101 @@ final class DemoUITests: XCTestCase {
         capture("Cancelled refresh", app: app)
     }
 
+    func testNetworkRefreshAndPaginationReachExhaustion() {
+        let app = launchNetwork(scenario: "success")
+        waitForNetworkStatus("Items: 5", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("Items: 10", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("No more data", in: app)
+        waitForNetworkStatus("Items: 15", in: app)
+        waitForNetworkStatus("Requests: 3", in: app)
+        capture("Network pagination exhausted", app: app)
+    }
+
+    func testNetworkRefreshFailurePreservesItems() {
+        let app = launchNetwork(scenario: "refreshFailure")
+        waitForNetworkStatus("Items: 5", in: app)
+        app.buttons["refresh-button"].tap()
+        waitForNetworkStatus("Failed HTTP 500", in: app)
+        XCTAssertTrue(app.staticTexts["network-status"].label.contains("Items: 5"))
+        XCTAssertTrue(app.cells["network-item-0"].exists)
+        capture("Network refresh failure", app: app)
+    }
+
+    func testNetworkLoadMoreFailureRetriesFromFooter() {
+        let app = launchNetwork(scenario: "loadMoreFailure")
+        waitForNetworkStatus("Items: 15", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("Failed HTTP 503", in: app)
+        let retry = app.descendants(matching: .any)
+            .matching(NSPredicate(format: "label CONTAINS %@", "Failed. Tap to retry")).firstMatch
+        XCTAssertTrue(retry.waitForExistence(timeout: 5))
+        let list = app.tables["network-list"]
+        for _ in 0 ..< 4 where !retry.isHittable {
+            list.swipeUp(velocity: .slow)
+        }
+        XCTAssertTrue(retry.isHittable)
+        retry.tap()
+        waitForNetworkStatus("Items: 30", in: app)
+        waitForNetworkStatus("Requests: 3", in: app)
+        capture("Network footer retry", app: app)
+    }
+
+    func testNetworkSlowPageIsPreemptedByRefresh() {
+        let app = launchNetwork(scenario: "staleResponse")
+        waitForNetworkStatus("Items: 5", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("Loading more", in: app)
+        app.buttons["refresh-button"].tap()
+        waitForNetworkStatus("Refreshes: 2", in: app)
+        waitForNetworkStatus("Requests: 3", in: app)
+        waitForNetworkStatus("Completed: 3", in: app)
+        XCTAssertTrue(app.staticTexts["network-status"].label.contains("Items: 5"))
+        XCTAssertFalse(app.cells["network-item-5"].exists)
+        capture("Network refresh preemption", app: app)
+    }
+
+    func testNetworkRequestCancellationDoesNotShowFailure() {
+        let app = launchNetwork(scenario: "staleResponse", extraArguments: ["--network-auto-cancel"])
+        waitForNetworkStatus("Items: 5", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("Cancelled", in: app)
+        waitForNetworkStatus("Cancels: 1", in: app)
+        XCTAssertFalse(app.staticTexts["network-status"].label.contains("Failed"))
+        XCTAssertFalse(app.staticTexts["network-status"].label.contains("Invalid JSON"))
+        capture("Network request cancelled", app: app)
+    }
+
+    func testNetworkRequestDoesNotUpdateAfterLeavingPage() {
+        let app = launchNetwork(scenario: "staleResponse")
+        waitForNetworkStatus("Items: 5", in: app)
+        app.buttons["load-more-button"].tap()
+        waitForNetworkStatus("Loading more", in: app)
+        app.navigationBars["Network Scenarios"].buttons.element(boundBy: 0).tap()
+        XCTAssertTrue(app.tables["demo-menu"].waitForExistence(timeout: 5))
+        XCTAssertFalse(app.staticTexts["network-status"].exists)
+        capture("Network page detached", app: app)
+    }
+
     private func launch(mode: String) -> XCUIApplication {
         let app = XCUIApplication()
         app.launchArguments = ["--demo-mode", mode]
+        app.launch()
+        return app
+    }
+
+    private func launchNetwork(
+        scenario: String,
+        delay: String = "fast",
+        extraArguments: [String] = []
+    ) -> XCUIApplication {
+        let app = XCUIApplication()
+        app.launchArguments = [
+            "--demo-mode", "network",
+            "--network-scenario", scenario,
+            "--network-delay", delay,
+        ] + extraArguments
         app.launch()
         return app
     }
@@ -151,6 +243,19 @@ final class DemoUITests: XCTestCase {
         let result = XCTWaiter.wait(for: [expectation], timeout: 30)
         if result != .completed {
             capture("Timed out waiting for \(text)", app: app)
+            XCTFail("Expected \(text); actual status: \(status.label)", file: file, line: line)
+        }
+    }
+
+    private func waitForNetworkStatus(_ text: String, in app: XCUIApplication,
+                                      file: StaticString = #filePath, line: UInt = #line)
+    {
+        let status = app.staticTexts["network-status"]
+        let predicate = NSPredicate(format: "label CONTAINS %@", text)
+        let expectation = XCTNSPredicateExpectation(predicate: predicate, object: status)
+        let result = XCTWaiter.wait(for: [expectation], timeout: 30)
+        if result != .completed {
+            capture("Timed out waiting for network \(text)", app: app)
             XCTFail("Expected \(text); actual status: \(status.label)", file: file, line: line)
         }
     }

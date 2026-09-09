@@ -1,15 +1,14 @@
 # Release Checklist / 发布检查表
 
-Current status: **unreleased 0.1 candidate**. Do not create a tag, merge a PR, or
-publish a release as part of documentation or implementation delivery. Release
-actions require a separate explicit decision. Deployment target 16.0 is not
-evidence that the app has run on iOS 16.
+Current status: **0.1.0-beta.2 candidate**; 0.1.0-beta.1 remains published and
+unchanged. Do not create the beta.2 tag, merge its PR, or publish its release as
+part of implementation delivery. Deployment target 16.0 is not evidence that the
+app has run on iOS 16.
 
 ## Delivery / 交付
 
-- [ ] Review the foundation PR, the dependent P1–P3 core/pagination/demo PR
-  (`codex/p1-p3-components`), and the documentation PR (`codex/p4-documentation`).
-  Each dependent PR must identify its intended base.
+- [ ] Review the beta.2 network-scenarios PR from `codex/network-scenarios` into
+  `main`, including its Demo, tests, documentation, and CI evidence.
 - [ ] Confirm each PR diff builds as a coherent stage, and includes actual
   verification results and any unresolved environment limitations.
 - [ ] After approved merges, update branch installation instructions to `main`.
@@ -33,20 +32,20 @@ evidence that the app has run on iOS 16.
 - [ ] **Before 1.0: run on iOS 16 and iPadOS 16**, recording the runtime/device and
   results. 若当前机器无法安装或启动该运行环境，必须明确保留此门槛。
 
-Current evidence: Xcode 26.6 device and simulator builds passed. Xcode 27 beta /
-iOS 27 ran 30 passing core XCTest tests on each of iPhone and iPad; all 10 UI
-scenarios passed on each device across full and targeted reruns after the
-deterministic cancellation fixture fix. Foundation CI passed Swift 6.0 /
-Xcode 16.2 device-SDK compilation and the Xcode 26.6 simulator matrix. Complete
-implementation Swift 6.0 compilation and formatting also passed; see PR #2 for
-current remote simulator CI conclusions. The stable simulator debug service is
-incompatible with the current local host; beta passes do not establish stable
-runtime validation. Update this paragraph only from completed evidence.
+Current local evidence: Xcode 27 beta on iPhone 16 / iOS 18.2 and iPad Pro
+11-inch (M4) / iPadOS 18.5 ran 40 passing XCTest cases and 16 passing UI scenarios
+on both devices. The
+final transport refactor also passed a focused rerun of all 10 API-client tests
+and 6 network UI scenarios. Remote Xcode 16.2 and Xcode 26.6 conclusions must be
+copied from the beta.2 PR checks after they finish.
 
 ## Runtime Review / 运行检查
 
 - [ ] Refresh, all footer modes, retry, exhaustion, repeated triggers, and empty
   pages with and without a next cursor.
+- [ ] On a physical device, run every Network Scenarios option and verify replace,
+  append, exhaustion, preserved data, footer retry, timeout, cancellation, reset,
+  malformed JSON, and refresh preemption. Record device and OS versions.
 - [ ] Bounded short-content filling and cancellation during scheduled fill.
 - [ ] Refresh superseding pagination; cancellation and stale responses from
   loaders that ignore cancellation; callback `onCancel` preventing stale writes.

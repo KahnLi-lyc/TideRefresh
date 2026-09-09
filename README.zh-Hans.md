@@ -10,22 +10,21 @@ async 和回调式取消，以及可替换的动画。不会替换业务的滚�
 
 ## 当前状态与安装
 
-当前为 **尚未发布的 0.1 候选版本**，没有可用的版本标签或正式 release。
-评审期间在 Xcode 的 Add Package Dependencies 中选择文档分支，或使用：
+最新预发布版本为 **0.1.0-beta.1**。当前分支准备尚未发布的
+**0.1.0-beta.2** 网络 Demo 候选版本，不修改公共 API。在 Xcode 的
+Add Package Dependencies 中添加仓库，或使用：
 
 ```swift
 dependencies: [
     .package(
         url: "https://github.com/KahnLi-lyc/TideRefresh.git",
-        branch: "codex/p4-documentation"
+        exact: "0.1.0-beta.1"
     ),
 ]
 ```
 
 在目标的依赖中添加 `.product(name: "TideRefresh", package: "TideRefresh")`。
-目前 PR 尚未合并，`main` 只有初始化内容；完整候选版本请使用
-`codex/p4-documentation`。所有依赖 PR 合并后才改用 `main`。分支会继续变化，
-应用应提交解析后的依赖版本以便复现。
+只有在明确测试未发布变更时才依赖 `main`。应用应提交解析后的依赖版本以便复现。
 
 要求 Swift 6.0 兼容语法、UIKit、iOS/iPadOS 16+。当前不覆盖横向滚动、倒置聊天列表、
 嵌套滚动仲裁、SwiftUI、macOS 和 Mac Catalyst。
@@ -303,12 +302,20 @@ extension SpinnerAnimator: RefreshAnimator {
 
 ## Demo 与验证
 
-打开 `Examples/TideRefreshDemo.xcodeproj`，选择 `TideRefreshDemo`，在 iPhone/iPad
-模拟器运行。Demo 包含列表、网格、短内容补页、上拉 footer、预加载、序列帧及可控失败场景。
+打开 `Examples/TideRefreshDemo.xcodeproj`，选择 `TideRefreshDemo`，可在 iPhone、
+iPad、模拟器或真机运行。七个页面覆盖列表、网格、短内容补页、上拉 footer、预加载、
+序列帧、可控失败及 **Network Scenarios**。
+
+Network Scenarios 使用真实的临时 `URLSession` 发起请求，由本地 `URLProtocol` Mock
+返回 HTTP 响应，不访问公网。可选择场景和延迟，并通过工具栏执行刷新、加载更多、取消、
+重置。状态区显示 HTTP 状态、请求数、完成数、取消数、项目数、刷新数和页数。场景覆盖空页、短页、
+无更多数据、HTTP 500/503、footer 点击重试、超时、错误 JSON，以及刷新抢占慢分页。
 
 | iPhone 列表 | iPad 网格 |
 | --- | --- |
 | ![iPhone 列表 Demo](docs/images/iphone-table.png) | ![iPad 网格 Demo](docs/images/ipad-collection.png) |
+
+![网络场景 Demo](docs/images/network-scenarios.png)
 
 ```sh
 xcodebuild -showdestinations -project Examples/TideRefreshDemo.xcodeproj -scheme TideRefreshDemo
@@ -329,12 +336,10 @@ gem install xcodeproj -v 1.28.1
 ruby -e 'gem "xcodeproj", "1.28.1"; load "scripts/generate-project.rb"'
 ```
 
-当前本地证据：Xcode 26.6 真机目标与模拟器目标均编译成功。Xcode 27 beta / iOS 27
-上的 iPhone、iPad 各通过 30 个核心 XCTest；修复可控取消测试数据后，两类设备的 10 个
-UI 场景均通过完整运行及定向重跑。稳定版模拟器调试服务与当前本机宿主不兼容，因此 beta
-运行证据单独记录。基础工程 CI 已通过 Swift 6.0 / Xcode 16.2 真机 SDK 编译和 Xcode 26.6
-模拟器矩阵。实现 PR 也已通过 Swift 6.0 编译和格式检查；远程模拟器检查的最新结果见
-[PR #2](https://github.com/KahnLi-lyc/TideRefresh/pull/2)。
+当前分支证据：Xcode 27 beta 使用 Swift 6 模式编译通过。在 iPhone 16 / iOS 18.2 与
+iPad Pro 11-inch (M4) / iPadOS 18.5 上，40 个 XCTest 和 16 个 UI 场景全部通过。
+最终 Mock 传输层重构后，10 个 API 客户端测试与 6 个网络 UI 场景也已定向重跑通过。
+SwiftFormat 和空白检查通过。Xcode 16.2 基线及 Xcode 26.6 CI 结果记录在本次 PR。
 
 自动化覆盖可访问控件、窗口尺寸变化和方向变化；人工 VoiceOver、真机分屏/Stage Manager
 仍待检查。强制深色模式的大字体截图已人工查看，见[验证报告](docs/verification.md)；DocC 已编译成功。

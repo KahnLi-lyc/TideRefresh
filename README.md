@@ -13,24 +13,22 @@ The application continues to own its items and data source.
 
 ## Status and Installation
 
-This is an **unreleased 0.1 candidate**. No version tag or release is available.
-During review, add the documentation branch in Xcode's Add Package Dependencies,
-or use this dependency in an iOS package:
+The latest prerelease is **0.1.0-beta.1**. This branch prepares the unreleased
+**0.1.0-beta.2** network-demo candidate without changing the public API. Add the
+package in Xcode's Add Package Dependencies, or use this dependency:
 
 ```swift
 dependencies: [
     .package(
         url: "https://github.com/KahnLi-lyc/TideRefresh.git",
-        branch: "codex/p4-documentation"
+        exact: "0.1.0-beta.1"
     ),
 ]
 ```
 
 Link `.product(name: "TideRefresh", package: "TideRefresh")` to your target.
-The PRs are unmerged; `main` currently contains only the bootstrap. Use
-`codex/p4-documentation` for the full candidate and switch to `main` only after
-the dependent PRs have merged. Branch dependencies are
-mutable; commit your application's resolved package versions for reproducibility.
+Use `main` only when intentionally testing unreleased changes. Commit your
+application's resolved package versions for reproducibility.
 
 Requirements: Swift 6.0-compatible language mode, UIKit, and iOS/iPadOS 16+.
 Horizontal scrolling, inverted chat, nested-scroll arbitration, SwiftUI, macOS,
@@ -324,12 +322,22 @@ core or default-demo dependency.
 ## Demo and Verification
 
 Open `Examples/TideRefreshDemo.xcodeproj`, select `TideRefreshDemo`, and run on an
-iPhone or iPad simulator. The demo includes table/collection layouts, short
-content, pull and prefetch footers, frame animation, and deterministic failures.
+iPhone, iPad, simulator, or physical device. The seven demo pages include
+table/collection layouts, short content, pull and prefetch footers, frame
+animation, deterministic failures, and **Network Scenarios**.
+
+Network Scenarios uses a real ephemeral `URLSession` whose requests are answered
+by a local `URLProtocol` mock, so it never needs internet access. Select a
+scenario and delay, then use the toolbar to refresh, load more, cancel, or reset.
+The status area reports HTTP status, requests, completions, cancellations, item count,
+refreshes, and pages. Scenarios cover empty/short pages, exhaustion, HTTP 500/503,
+footer retry, timeout, malformed JSON, and refresh preemption of a slow page.
 
 | iPhone table | iPad collection |
 | --- | --- |
 | ![iPhone table demo](docs/images/iphone-table.png) | ![iPad collection demo](docs/images/ipad-collection.png) |
+
+![Network scenarios demo](docs/images/network-scenarios.png)
 
 ```sh
 # Inspect available destinations before choosing a local simulator.
@@ -353,15 +361,11 @@ gem install xcodeproj -v 1.28.1
 ruby -e 'gem "xcodeproj", "1.28.1"; load "scripts/generate-project.rb"'
 ```
 
-Current local evidence: Xcode 26.6 device and simulator builds succeeded. On
-Xcode 27 beta / iOS 27, 30 core XCTest tests passed on each of iPhone and iPad;
-all 10 UI scenarios passed on each device across suite and targeted reruns after
-fixing the deterministic cancellation fixture. The stable simulator debug
-service is incompatible with the current local host, so beta runtime evidence
-is recorded separately. Foundation CI passed the Swift 6.0 / Xcode 16.2 build
-using the device SDK and the Xcode 26.6 simulator matrix. The implementation PR
-also passed Swift 6.0 compilation and formatting; current simulator CI conclusions
-are available in [PR #2](https://github.com/KahnLi-lyc/TideRefresh/pull/2).
+Current branch evidence: Xcode 27 beta compiled in Swift 6 mode. On iPhone 16 /
+iOS 18.2 and iPad Pro 11-inch (M4) / iPadOS 18.5, all 40 XCTest cases and all 16 UI
+scenarios passed. After the final Mock transport refactor, the 10 API-client
+tests and 6 network UI scenarios passed again. SwiftFormat and whitespace checks
+pass. Xcode 16.2 baseline and Xcode 26.6 CI results are recorded on the pull request.
 
 Automated checks cover accessible controls, resizing, and orientation. Manual
 VoiceOver and on-device split-screen/Stage Manager remain open checks. The forced

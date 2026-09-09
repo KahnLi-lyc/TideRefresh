@@ -78,16 +78,14 @@ state and progress, apply ``RefreshTheme`` / ``RefreshStrings``, and stop on det
 Progress may exceed one. Lottie is available only in a separate optional example
 package pinned to 4.5.2; it is not a core dependency.
 
-This is an unreleased 0.1 candidate. iOS 16 runtime validation remains a 1.0
-release gate. Horizontal scrolling, inverted chat, nested scrolling arbitration,
-SwiftUI, and Catalyst are outside the supported scope.
-Local Xcode 27 beta / iOS 27 evidence includes 30 passing core tests and 10 passing
-UI scenarios on each of iPhone and iPad across suite and targeted reruns. Stable
-Xcode 26.6 device/simulator compilation passed; local stable simulator execution
-is blocked by host/debug-service compatibility. Foundation CI passed, while
-implementation Swift 6.0 compilation and formatting also passed. See the repository
-pull requests for current stable simulator CI results. Manual accessibility/device
-checks and iOS 16 runtime verification remain release gates.
+The latest prerelease is 0.1.0-beta.1. The beta.2 candidate adds local network
+Demo and test coverage without changing this public API. iOS 16 runtime validation
+remains a 1.0 release gate. Horizontal scrolling, inverted chat, nested scrolling
+arbitration, SwiftUI, and Catalyst are outside the supported scope.
+Local Xcode 27 beta evidence includes 40 passing XCTest cases and 16 passing UI
+scenarios on iPhone and iPad. See the repository pull requests for current Xcode
+16.2 and Xcode 26.6 CI results. Manual accessibility/device checks and iOS 16
+runtime verification remain release gates.
 
 ## Topics
 

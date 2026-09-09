@@ -59,9 +59,9 @@ extension DemoViewController: UITableViewDataSource {
 extension DemoViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        navigationController?.pushViewController(
-            DemoListViewController(mode: DemoMode.allCases[indexPath.row]),
-            animated: true
-        )
+        let mode = DemoMode.allCases[indexPath.row]
+        let controller: UIViewController = mode == .network
+            ? NetworkDemoViewController() : DemoListViewController(mode: mode)
+        navigationController?.pushViewController(controller, animated: true)
     }
 }

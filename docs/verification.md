@@ -1,15 +1,16 @@
 # Verification Report
 
-Date: 2026-09-09. Candidate: P1-P3 implementation PR #2, with P4 documentation.
-This is an unreleased 0.1 candidate, not a declaration of 1.0 readiness.
+Date: 2026-09-09. Candidate: 0.1.0-beta.2 network scenarios.
+The published 0.1.0-beta.1 tag is unchanged. This report does not declare 1.0 readiness.
 
 ## Local Results
 
 | Check | Environment | Result |
 | --- | --- | --- |
-| Core tests | iPhone 17 Pro, iOS 27, Xcode 27 beta | 30 passed |
-| Core tests | iPad Pro 11-inch (M5), iPadOS 27, Xcode 27 beta | 30 passed |
-| UI scenarios | Both devices above | 10 scenarios passed per device, full suites plus focused reruns |
+| XCTest | iPhone 16, iOS 18.2, Xcode 27 beta | 40 passed |
+| XCTest | iPad Pro 11-inch (M4), iPadOS 18.5, Xcode 27 beta | 40 passed |
+| UI scenarios | Both devices above | 16 passed per device |
+| Network-focused rerun | iPhone 16, iOS 18.2, Xcode 27 beta | 10 API tests and 6 UI scenarios passed after the final transport refactor |
 | Stable compilation | Xcode 26.6, iOS Simulator SDK | Passed after foundation integration |
 | Foundation device compilation | Xcode 26.6, iPhoneOS SDK | Passed |
 | Optional Lottie adapter | Lottie 4.5.2, iOS Simulator SDK | Passed separately from core |
@@ -22,10 +23,16 @@ observer teardown, geometry, delayed content layout and bounded fill scheduling.
 Cancelled workers are awaited through internal task barriers before stale-response
 assertions; timing delays are not used to prove concurrency correctness.
 
+The network tests additionally cover URL and cursor construction, HTTP 200/500/503,
+empty and short pages, malformed JSON, timeout, cancellation accounting, retry from
+the same cursor, and completion ordering. A real ephemeral `URLSession` talks only
+to the local `MockURLProtocol`; no public network or third-party service is used.
+
 UI tests cover all three footer triggers, real pull gestures, programmatic refresh,
 retry/reset/exhaustion, deterministic cancellation, diffable collection updates,
-frame examples, rotation and accessibility text sizing. Cancellation uses a loader
-that waits for cancellation so XCTest's event-idle delay cannot hide loading state.
+frame examples, rotation and accessibility text sizing. Six network scenarios verify
+replacement, pagination and exhaustion, preserved items after refresh failure,
+footer retry, refresh preemption, cancellation, and detach while a request is active.
 
 ## Evidence
 
@@ -36,8 +43,9 @@ products are intentionally ignored by Git. Representative screenshots are tracke
 - [iPhone table](images/iphone-table.png)
 - [iPad collection](images/ipad-collection.png)
 - [iPad dark appearance with accessibility text](images/ipad-dark-dynamic-type.png)
+- [iPhone network scenarios](images/network-scenarios.png)
 
-All three images were visually inspected. The initial appearance launch preference
+All four images were visually inspected. The initial appearance launch preference
 did not apply dark mode; the demo now explicitly selects dark appearance for its
 UI-test launch flag, and the replacement screenshot was verified.
 
@@ -82,6 +90,5 @@ its service connection on the current host, so local runtime evidence uses Xcode
 - Physical iPad split-screen/Stage Manager and interactive window resizing.
 - Extended keyboard/safe-area integration and performance profiling on real apps.
 
-These checks do not block review of the 0.1 candidate. They remain explicit gates
-for a 1.0 compatibility claim. No branches have been merged and no tags or releases
-have been created automatically.
+These checks do not block review of the beta.2 candidate. They remain explicit gates
+for a 1.0 compatibility claim. No beta.2 tag or release has been created.

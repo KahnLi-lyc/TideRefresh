@@ -7,127 +7,136 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		13D2F2D3664F415BE272903A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EBA460CF0BE1189A006E2F1 /* Foundation.framework */; };
-		15F99C50EB8FE7E424DA04DE /* PaginationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 293D1A1EFA7EBCAA7F93EAA6 /* PaginationCoordinatorTests.swift */; };
-		34E30BA81E5ED755165C24DE /* DemoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 51C61C2D5BD7E4ED42EFDB8F /* DemoDetailViewController.swift */; };
-		3C0B4A208FA9081DDBC97F84 /* TideRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 079AC40CA99870AD55838C92 /* TideRefresh */; };
-		3CA674D005099368A875C288 /* DemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08F325C5B60A6D38519736A1 /* DemoModels.swift */; };
-		50D0A3C858FBC5372DA5BCB6 /* RefreshControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9012C9AB4CD189FDCD521A65 /* RefreshControllerTests.swift */; };
-		724E4361683BFF909BAAFC63 /* TideRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 83E00983B5B518730643574E /* TideRefresh */; };
-		76EF4B53A6CE288850DFC55C /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EBA460CF0BE1189A006E2F1 /* Foundation.framework */; };
-		8D3F6F27A450C23E777398E8 /* DemoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4172194BDEA6B822CD869C5 /* DemoListViewController.swift */; };
-		C38567B75BE4B8CBAFE6AA93 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = E83FE54FE52B575754CF4F91 /* AppDelegate.swift */; };
-		C72B44B6AFA66DEE909E7CCD /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89DE2883C3FAC4E6A9484111 /* SceneDelegate.swift */; };
-		D75177180CF3F024E5030B53 /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84C096CD60CC70CF0A3E3D64 /* DemoViewController.swift */; };
-		DEECE47277546BDFEB6A121F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EBA460CF0BE1189A006E2F1 /* Foundation.framework */; };
-		E22C4CC27DA6A0264F95A675 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 80F033CBB2464ADFA6D8A4E4 /* DemoUITests.swift */; };
-		ECA885ED9998EBB36B77E5AB /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 444FA4877DA5812BBAB88005 /* ConfigurationTests.swift */; };
+		2734B464858FA8F81539400D /* TideRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = BDB01ED1C9FB2FE2D5C2D190 /* TideRefresh */; };
+		3D04EC89F6C84A56F4959456 /* PaginationCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8DAAF256FFB0D32819433FC9 /* PaginationCoordinatorTests.swift */; };
+		471C174E995A89829A26C9B4 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F983C95C9773639F15AC3B6 /* Foundation.framework */; };
+		4D634A0C7BFF8EFBA248C6F5 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B097B00EC45856B9EEEF7037 /* SceneDelegate.swift */; };
+		6A88570E182FB53001DC7194 /* DemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2DA80575B93835DCB56C7F /* DemoModels.swift */; };
+		82F5CC6A847066660661187E /* NetworkDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998A4CFBB7CD071B863F162A /* NetworkDemoViewController.swift */; };
+		90C643726AB2E152D44FC7C1 /* RefreshControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */; };
+		931C1D75C1AA73144B3F5CB2 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B96A7C91ABC0AD7240CC0B /* DemoUITests.swift */; };
+		A485F50D27C3A83A9598BFF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F983C95C9773639F15AC3B6 /* Foundation.framework */; };
+		AEA64D498DEE0092A5335123 /* DemoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E46645C8B9F282F09BBD7C7 /* DemoDetailViewController.swift */; };
+		C33179D85972304D47A7C056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F983C95C9773639F15AC3B6 /* Foundation.framework */; };
+		D0E098D915C1A6B854F5C8AB /* DemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94B952C9DB4439A12E9CE992 /* DemoViewController.swift */; };
+		D12F106F30EF186DD13FCF4B /* ConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2815659DA4E41CEF04FA7D48 /* ConfigurationTests.swift */; };
+		D180F87FA95CEADCD7A81C13 /* DemoAPIClientTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A0F35CC6F6CB323738EBA9A /* DemoAPIClientTests.swift */; };
+		DA031910011BAEBAC9ECE25D /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3B8175104BCB72164CF398 /* AppDelegate.swift */; };
+		E48EFC3E55C72EC157034024 /* NetworkSupport.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B257FC7042E7399270623E5 /* NetworkSupport.swift */; };
+		ECC23A1021980F98E74197B4 /* DemoListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 908C7BBAD67064FD4798AA74 /* DemoListViewController.swift */; };
+		F2EC368456F21CA3CC114F3C /* TideRefresh in Frameworks */ = {isa = PBXBuildFile; productRef = 854AD3A109EB1E2CAD90740C /* TideRefresh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		511B44C803DD518E46A95CC8 /* PBXContainerItemProxy */ = {
+		185696F2FF52498A7D4413EF /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5EC131A876DB592F0FCB82C9 /* Project object */;
+			containerPortal = 6BCC7F9BD1D836F0CB386451 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 13288834846368499DB79FB4;
+			remoteGlobalIDString = 73E42012D8195D2110A2940E;
 			remoteInfo = TideRefreshDemo;
 		};
-		8FE45604B4E39F8F5C149024 /* PBXContainerItemProxy */ = {
+		D3DDABFFDC1C75E597F6D4B5 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
-			containerPortal = 5EC131A876DB592F0FCB82C9 /* Project object */;
+			containerPortal = 6BCC7F9BD1D836F0CB386451 /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 13288834846368499DB79FB4;
+			remoteGlobalIDString = 73E42012D8195D2110A2940E;
 			remoteInfo = TideRefreshDemo;
 		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		08F325C5B60A6D38519736A1 /* DemoModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoModels.swift; path = TideRefreshDemo/DemoModels.swift; sourceTree = "<group>"; };
-		0EBA460CF0BE1189A006E2F1 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
-		293D1A1EFA7EBCAA7F93EAA6 /* PaginationCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PaginationCoordinatorTests.swift; path = ../Tests/TideRefreshTests/PaginationCoordinatorTests.swift; sourceTree = "<group>"; };
-		444FA4877DA5812BBAB88005 /* ConfigurationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConfigurationTests.swift; path = ../Tests/TideRefreshTests/ConfigurationTests.swift; sourceTree = "<group>"; };
-		4DD1EAE565B41D37A821BB50 /* TideRefreshDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TideRefreshDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		51C61C2D5BD7E4ED42EFDB8F /* DemoDetailViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoDetailViewController.swift; path = TideRefreshDemo/DemoDetailViewController.swift; sourceTree = "<group>"; };
-		544BAE2B5CFBDD1DCED98388 /* TideRefreshTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TideRefreshTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		80F033CBB2464ADFA6D8A4E4 /* DemoUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoUITests.swift; path = TideRefreshDemoUITests/DemoUITests.swift; sourceTree = "<group>"; };
-		84C096CD60CC70CF0A3E3D64 /* DemoViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoViewController.swift; path = TideRefreshDemo/DemoViewController.swift; sourceTree = "<group>"; };
-		89DE2883C3FAC4E6A9484111 /* SceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = TideRefreshDemo/SceneDelegate.swift; sourceTree = "<group>"; };
-		9012C9AB4CD189FDCD521A65 /* RefreshControllerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshControllerTests.swift; path = ../Tests/TideRefreshTests/RefreshControllerTests.swift; sourceTree = "<group>"; };
-		C4172194BDEA6B822CD869C5 /* DemoListViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoListViewController.swift; path = TideRefreshDemo/DemoListViewController.swift; sourceTree = "<group>"; };
-		CDA11C98B305288B44F32678 /* TideRefreshDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TideRefreshDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		E83FE54FE52B575754CF4F91 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TideRefreshDemo/AppDelegate.swift; sourceTree = "<group>"; };
+		1E46645C8B9F282F09BBD7C7 /* DemoDetailViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoDetailViewController.swift; path = TideRefreshDemo/DemoDetailViewController.swift; sourceTree = "<group>"; };
+		22B96A7C91ABC0AD7240CC0B /* DemoUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoUITests.swift; path = TideRefreshDemoUITests/DemoUITests.swift; sourceTree = "<group>"; };
+		2815659DA4E41CEF04FA7D48 /* ConfigurationTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ConfigurationTests.swift; path = ../Tests/TideRefreshTests/ConfigurationTests.swift; sourceTree = "<group>"; };
+		2F983C95C9773639F15AC3B6 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
+		320F0784BF82E4D5F7BF4421 /* TideRefreshDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TideRefreshDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		454AC507191E296CA6371B92 /* TideRefreshTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TideRefreshTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B257FC7042E7399270623E5 /* NetworkSupport.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkSupport.swift; path = TideRefreshDemo/NetworkSupport.swift; sourceTree = "<group>"; };
+		7A0F35CC6F6CB323738EBA9A /* DemoAPIClientTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoAPIClientTests.swift; path = ../Tests/TideRefreshTests/DemoAPIClientTests.swift; sourceTree = "<group>"; };
+		8DAAF256FFB0D32819433FC9 /* PaginationCoordinatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = PaginationCoordinatorTests.swift; path = ../Tests/TideRefreshTests/PaginationCoordinatorTests.swift; sourceTree = "<group>"; };
+		8ED83F62F088C5C0151100C4 /* TideRefreshDemoUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TideRefreshDemoUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		908C7BBAD67064FD4798AA74 /* DemoListViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoListViewController.swift; path = TideRefreshDemo/DemoListViewController.swift; sourceTree = "<group>"; };
+		94B952C9DB4439A12E9CE992 /* DemoViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoViewController.swift; path = TideRefreshDemo/DemoViewController.swift; sourceTree = "<group>"; };
+		998A4CFBB7CD071B863F162A /* NetworkDemoViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkDemoViewController.swift; path = TideRefreshDemo/NetworkDemoViewController.swift; sourceTree = "<group>"; };
+		A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshControllerTests.swift; path = ../Tests/TideRefreshTests/RefreshControllerTests.swift; sourceTree = "<group>"; };
+		B097B00EC45856B9EEEF7037 /* SceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = TideRefreshDemo/SceneDelegate.swift; sourceTree = "<group>"; };
+		EE3B8175104BCB72164CF398 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TideRefreshDemo/AppDelegate.swift; sourceTree = "<group>"; };
+		FF2DA80575B93835DCB56C7F /* DemoModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoModels.swift; path = TideRefreshDemo/DemoModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		476BBB47C2A1F9352CA55FCF /* Frameworks */ = {
+		059B0803A1F9F50253FC7A20 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				13D2F2D3664F415BE272903A /* Foundation.framework in Frameworks */,
-				724E4361683BFF909BAAFC63 /* TideRefresh in Frameworks */,
+				C33179D85972304D47A7C056 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		575B8BB0F6582C3549755519 /* Frameworks */ = {
+		248CA3FB1B181664FDA43FF0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				76EF4B53A6CE288850DFC55C /* Foundation.framework in Frameworks */,
+				A485F50D27C3A83A9598BFF8 /* Foundation.framework in Frameworks */,
+				F2EC368456F21CA3CC114F3C /* TideRefresh in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A8E0A720E6B5F59E3DE26599 /* Frameworks */ = {
+		59957563C6EB17670C8C5A0F /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DEECE47277546BDFEB6A121F /* Foundation.framework in Frameworks */,
-				3C0B4A208FA9081DDBC97F84 /* TideRefresh in Frameworks */,
+				471C174E995A89829A26C9B4 /* Foundation.framework in Frameworks */,
+				2734B464858FA8F81539400D /* TideRefresh in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		060DD8296C76E4BCF15D30CF /* Products */ = {
+		390530F0A745045CF0D295C9 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				CDA11C98B305288B44F32678 /* TideRefreshDemo.app */,
-				544BAE2B5CFBDD1DCED98388 /* TideRefreshTests.xctest */,
-				4DD1EAE565B41D37A821BB50 /* TideRefreshDemoUITests.xctest */,
-			);
-			name = Products;
-			sourceTree = "<group>";
-		};
-		499EBC2A0632C1A0587D60D5 = {
-			isa = PBXGroup;
-			children = (
-				060DD8296C76E4BCF15D30CF /* Products */,
-				A1659E00A3D24A7CEBB45D7A /* Frameworks */,
-				E83FE54FE52B575754CF4F91 /* AppDelegate.swift */,
-				51C61C2D5BD7E4ED42EFDB8F /* DemoDetailViewController.swift */,
-				C4172194BDEA6B822CD869C5 /* DemoListViewController.swift */,
-				08F325C5B60A6D38519736A1 /* DemoModels.swift */,
-				84C096CD60CC70CF0A3E3D64 /* DemoViewController.swift */,
-				89DE2883C3FAC4E6A9484111 /* SceneDelegate.swift */,
-				444FA4877DA5812BBAB88005 /* ConfigurationTests.swift */,
-				293D1A1EFA7EBCAA7F93EAA6 /* PaginationCoordinatorTests.swift */,
-				9012C9AB4CD189FDCD521A65 /* RefreshControllerTests.swift */,
-				80F033CBB2464ADFA6D8A4E4 /* DemoUITests.swift */,
-			);
-			sourceTree = "<group>";
-		};
-		A1659E00A3D24A7CEBB45D7A /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				DC64EE6BA36C5DE64F09F51B /* iOS */,
+				F8DF472797241BB1AF7BD58E /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		DC64EE6BA36C5DE64F09F51B /* iOS */ = {
+		500F62947BFB7AF0CB8DABE6 = {
 			isa = PBXGroup;
 			children = (
-				0EBA460CF0BE1189A006E2F1 /* Foundation.framework */,
+				9A1367E033651B537B945453 /* Products */,
+				390530F0A745045CF0D295C9 /* Frameworks */,
+				EE3B8175104BCB72164CF398 /* AppDelegate.swift */,
+				1E46645C8B9F282F09BBD7C7 /* DemoDetailViewController.swift */,
+				908C7BBAD67064FD4798AA74 /* DemoListViewController.swift */,
+				FF2DA80575B93835DCB56C7F /* DemoModels.swift */,
+				94B952C9DB4439A12E9CE992 /* DemoViewController.swift */,
+				998A4CFBB7CD071B863F162A /* NetworkDemoViewController.swift */,
+				5B257FC7042E7399270623E5 /* NetworkSupport.swift */,
+				B097B00EC45856B9EEEF7037 /* SceneDelegate.swift */,
+				2815659DA4E41CEF04FA7D48 /* ConfigurationTests.swift */,
+				7A0F35CC6F6CB323738EBA9A /* DemoAPIClientTests.swift */,
+				8DAAF256FFB0D32819433FC9 /* PaginationCoordinatorTests.swift */,
+				A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */,
+				22B96A7C91ABC0AD7240CC0B /* DemoUITests.swift */,
+			);
+			sourceTree = "<group>";
+		};
+		9A1367E033651B537B945453 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				320F0784BF82E4D5F7BF4421 /* TideRefreshDemo.app */,
+				454AC507191E296CA6371B92 /* TideRefreshTests.xctest */,
+				8ED83F62F088C5C0151100C4 /* TideRefreshDemoUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F8DF472797241BB1AF7BD58E /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				2F983C95C9773639F15AC3B6 /* Foundation.framework */,
 			);
 			name = iOS;
 			sourceTree = "<group>";
@@ -135,13 +144,13 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		13288834846368499DB79FB4 /* TideRefreshDemo */ = {
+		73E42012D8195D2110A2940E /* TideRefreshDemo */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C79C3AFCD3BCC6438111B29B /* Build configuration list for PBXNativeTarget "TideRefreshDemo" */;
+			buildConfigurationList = 600F8AC398A994C4AD479668 /* Build configuration list for PBXNativeTarget "TideRefreshDemo" */;
 			buildPhases = (
-				644B4CEC51A1345E255243A6 /* Sources */,
-				476BBB47C2A1F9352CA55FCF /* Frameworks */,
-				1A2EB718FB5A6821FC66F1F9 /* Resources */,
+				6180F35FFE2CED39D7F2F5FB /* Sources */,
+				59957563C6EB17670C8C5A0F /* Frameworks */,
+				6235864A07F67508729E0CA7 /* Resources */,
 			);
 			buildRules = (
 			);
@@ -149,61 +158,61 @@
 			);
 			name = TideRefreshDemo;
 			packageProductDependencies = (
-				83E00983B5B518730643574E /* TideRefresh */,
+				BDB01ED1C9FB2FE2D5C2D190 /* TideRefresh */,
 			);
 			productName = TideRefreshDemo;
-			productReference = CDA11C98B305288B44F32678 /* TideRefreshDemo.app */;
+			productReference = 320F0784BF82E4D5F7BF4421 /* TideRefreshDemo.app */;
 			productType = "com.apple.product-type.application";
 		};
-		1929BB6992BCF503F401E0C6 /* TideRefreshDemoUITests */ = {
+		76187D0C419DD24E7E175BDE /* TideRefreshDemoUITests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 349326A7DD63F2BCCA265A6D /* Build configuration list for PBXNativeTarget "TideRefreshDemoUITests" */;
+			buildConfigurationList = 1EA46BD14B7D14E20C012AFA /* Build configuration list for PBXNativeTarget "TideRefreshDemoUITests" */;
 			buildPhases = (
-				C1B27B37D94C3711AD76227B /* Sources */,
-				575B8BB0F6582C3549755519 /* Frameworks */,
-				B506A164A867F1D594F878B8 /* Resources */,
+				C8FE8E6DB82CA8462D0CD200 /* Sources */,
+				059B0803A1F9F50253FC7A20 /* Frameworks */,
+				5078256B61378A7A754B3123 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				6CE777E3F95CBFE147DC17D3 /* PBXTargetDependency */,
+				D55FB5369B0C1DA2CAC8B2FE /* PBXTargetDependency */,
 			);
 			name = TideRefreshDemoUITests;
 			productName = TideRefreshDemoUITests;
-			productReference = 4DD1EAE565B41D37A821BB50 /* TideRefreshDemoUITests.xctest */;
+			productReference = 8ED83F62F088C5C0151100C4 /* TideRefreshDemoUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
-		563FC91DE70D3D708AAC1566 /* TideRefreshTests */ = {
+		E38566AA5322C3544C5A57CA /* TideRefreshTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 4F27D577A7090CE483897803 /* Build configuration list for PBXNativeTarget "TideRefreshTests" */;
+			buildConfigurationList = 6DA4ED4B6E47BDB03F3C97B9 /* Build configuration list for PBXNativeTarget "TideRefreshTests" */;
 			buildPhases = (
-				A38D6FB9D1C4185266984185 /* Sources */,
-				A8E0A720E6B5F59E3DE26599 /* Frameworks */,
-				CB0603859F6D6D9E0F0ACBE8 /* Resources */,
+				C74530C646CB8EA4466F3358 /* Sources */,
+				248CA3FB1B181664FDA43FF0 /* Frameworks */,
+				0CB2C4A19324A4BBF4329D41 /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				A1AFE013D01ABDF53001F012 /* PBXTargetDependency */,
+				4C8517D9873AA141446EAAE4 /* PBXTargetDependency */,
 			);
 			name = TideRefreshTests;
 			packageProductDependencies = (
-				079AC40CA99870AD55838C92 /* TideRefresh */,
+				854AD3A109EB1E2CAD90740C /* TideRefresh */,
 			);
 			productName = TideRefreshTests;
-			productReference = 544BAE2B5CFBDD1DCED98388 /* TideRefreshTests.xctest */;
+			productReference = 454AC507191E296CA6371B92 /* TideRefreshTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		5EC131A876DB592F0FCB82C9 /* Project object */ = {
+		6BCC7F9BD1D836F0CB386451 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 1600;
 				LastUpgradeCheck = 1600;
 			};
-			buildConfigurationList = 73F367CA162CFABDCFBA05F1 /* Build configuration list for PBXProject "TideRefreshDemo" */;
+			buildConfigurationList = 45421C8B5CBA25F1747C067C /* Build configuration list for PBXProject "TideRefreshDemo" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -211,39 +220,39 @@
 				en,
 				Base,
 			);
-			mainGroup = 499EBC2A0632C1A0587D60D5;
+			mainGroup = 500F62947BFB7AF0CB8DABE6;
 			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
-				008F670E1123E285D74BC108 /* XCLocalSwiftPackageReference ".." */,
+				3AF5B7AEF044691C2DAA2BCE /* XCLocalSwiftPackageReference ".." */,
 			);
 			preferredProjectObjectVersion = 100;
-			productRefGroup = 060DD8296C76E4BCF15D30CF /* Products */;
+			productRefGroup = 9A1367E033651B537B945453 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				13288834846368499DB79FB4 /* TideRefreshDemo */,
-				563FC91DE70D3D708AAC1566 /* TideRefreshTests */,
-				1929BB6992BCF503F401E0C6 /* TideRefreshDemoUITests */,
+				73E42012D8195D2110A2940E /* TideRefreshDemo */,
+				E38566AA5322C3544C5A57CA /* TideRefreshTests */,
+				76187D0C419DD24E7E175BDE /* TideRefreshDemoUITests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		1A2EB718FB5A6821FC66F1F9 /* Resources */ = {
+		0CB2C4A19324A4BBF4329D41 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		B506A164A867F1D594F878B8 /* Resources */ = {
+		5078256B61378A7A754B3123 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		CB0603859F6D6D9E0F0ACBE8 /* Resources */ = {
+		6235864A07F67508729E0CA7 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -253,74 +262,59 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		644B4CEC51A1345E255243A6 /* Sources */ = {
+		6180F35FFE2CED39D7F2F5FB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C38567B75BE4B8CBAFE6AA93 /* AppDelegate.swift in Sources */,
-				34E30BA81E5ED755165C24DE /* DemoDetailViewController.swift in Sources */,
-				8D3F6F27A450C23E777398E8 /* DemoListViewController.swift in Sources */,
-				3CA674D005099368A875C288 /* DemoModels.swift in Sources */,
-				D75177180CF3F024E5030B53 /* DemoViewController.swift in Sources */,
-				C72B44B6AFA66DEE909E7CCD /* SceneDelegate.swift in Sources */,
+				DA031910011BAEBAC9ECE25D /* AppDelegate.swift in Sources */,
+				AEA64D498DEE0092A5335123 /* DemoDetailViewController.swift in Sources */,
+				ECC23A1021980F98E74197B4 /* DemoListViewController.swift in Sources */,
+				6A88570E182FB53001DC7194 /* DemoModels.swift in Sources */,
+				D0E098D915C1A6B854F5C8AB /* DemoViewController.swift in Sources */,
+				82F5CC6A847066660661187E /* NetworkDemoViewController.swift in Sources */,
+				E48EFC3E55C72EC157034024 /* NetworkSupport.swift in Sources */,
+				4D634A0C7BFF8EFBA248C6F5 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		A38D6FB9D1C4185266984185 /* Sources */ = {
+		C74530C646CB8EA4466F3358 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				ECA885ED9998EBB36B77E5AB /* ConfigurationTests.swift in Sources */,
-				15F99C50EB8FE7E424DA04DE /* PaginationCoordinatorTests.swift in Sources */,
-				50D0A3C858FBC5372DA5BCB6 /* RefreshControllerTests.swift in Sources */,
+				D12F106F30EF186DD13FCF4B /* ConfigurationTests.swift in Sources */,
+				D180F87FA95CEADCD7A81C13 /* DemoAPIClientTests.swift in Sources */,
+				3D04EC89F6C84A56F4959456 /* PaginationCoordinatorTests.swift in Sources */,
+				90C643726AB2E152D44FC7C1 /* RefreshControllerTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C1B27B37D94C3711AD76227B /* Sources */ = {
+		C8FE8E6DB82CA8462D0CD200 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				E22C4CC27DA6A0264F95A675 /* DemoUITests.swift in Sources */,
+				931C1D75C1AA73144B3F5CB2 /* DemoUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6CE777E3F95CBFE147DC17D3 /* PBXTargetDependency */ = {
+		4C8517D9873AA141446EAAE4 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = TideRefreshDemo;
-			target = 13288834846368499DB79FB4 /* TideRefreshDemo */;
-			targetProxy = 511B44C803DD518E46A95CC8 /* PBXContainerItemProxy */;
+			target = 73E42012D8195D2110A2940E /* TideRefreshDemo */;
+			targetProxy = D3DDABFFDC1C75E597F6D4B5 /* PBXContainerItemProxy */;
 		};
-		A1AFE013D01ABDF53001F012 /* PBXTargetDependency */ = {
+		D55FB5369B0C1DA2CAC8B2FE /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = TideRefreshDemo;
-			target = 13288834846368499DB79FB4 /* TideRefreshDemo */;
-			targetProxy = 8FE45604B4E39F8F5C149024 /* PBXContainerItemProxy */;
+			target = 73E42012D8195D2110A2940E /* TideRefreshDemo */;
+			targetProxy = 185696F2FF52498A7D4413EF /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
-		0249DC11497436F12907317F /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshTests;
-				SDKROOT = iphoneos;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TideRefreshDemo.app/TideRefreshDemo";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		37EED0C8C7E581F478FFA5C4 /* Release */ = {
+		22AA55950C7AA1D40DA3F2E4 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -374,23 +368,7 @@
 			};
 			name = Release;
 		};
-		5A3F40CB0ECC7BAEC53CEDE2 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemoUITests;
-				SDKROOT = iphoneos;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TideRefreshDemo;
-			};
-			name = Debug;
-		};
-		6B221046E0C278CA87E3B138 /* Debug */ = {
+		4E1A6A7B84A1B114E009A036 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
@@ -404,10 +382,11 @@
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TideRefreshDemo.app/TideRefreshDemo";
+				VALIDATE_PRODUCT = YES;
 			};
-			name = Debug;
+			name = Release;
 		};
-		8D42ED4A2CA9F53DB84793BF /* Release */ = {
+		63DE6BE1676D167EF547319D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
@@ -424,7 +403,40 @@
 			};
 			name = Release;
 		};
-		9624AF1FD0AEDC4176C772BA /* Debug */ = {
+		70696C71751A3D545CA8944F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemoUITests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = TideRefreshDemo;
+			};
+			name = Debug;
+		};
+		924399367AA60549FB4C91DC /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshTests;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TideRefreshDemo.app/TideRefreshDemo";
+			};
+			name = Debug;
+		};
+		92C5E59BB8A890027893208C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -485,7 +497,28 @@
 			};
 			name = Debug;
 		};
-		B072CAA61B71EEE73F107B48 /* Release */ = {
+		AD96C425CA04D7E12455E10A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemo;
+				SDKROOT = iphoneos;
+				SUPPORTS_MACCATALYST = NO;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		EDC260D401ECF635ADC96C2C /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -507,62 +540,41 @@
 			};
 			name = Release;
 		};
-		B0A7A273B267740334054198 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CLANG_ENABLE_OBJC_WEAK = NO;
-				CODE_SIGNING_ALLOWED = NO;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
-				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
-				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
-				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemo;
-				SDKROOT = iphoneos;
-				SUPPORTS_MACCATALYST = NO;
-				SWIFT_VERSION = 6.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		349326A7DD63F2BCCA265A6D /* Build configuration list for PBXNativeTarget "TideRefreshDemoUITests" */ = {
+		1EA46BD14B7D14E20C012AFA /* Build configuration list for PBXNativeTarget "TideRefreshDemoUITests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				8D42ED4A2CA9F53DB84793BF /* Release */,
-				5A3F40CB0ECC7BAEC53CEDE2 /* Debug */,
+				63DE6BE1676D167EF547319D /* Release */,
+				70696C71751A3D545CA8944F /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		4F27D577A7090CE483897803 /* Build configuration list for PBXNativeTarget "TideRefreshTests" */ = {
+		45421C8B5CBA25F1747C067C /* Build configuration list for PBXProject "TideRefreshDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				0249DC11497436F12907317F /* Release */,
-				6B221046E0C278CA87E3B138 /* Debug */,
+				92C5E59BB8A890027893208C /* Debug */,
+				22AA55950C7AA1D40DA3F2E4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		73F367CA162CFABDCFBA05F1 /* Build configuration list for PBXProject "TideRefreshDemo" */ = {
+		600F8AC398A994C4AD479668 /* Build configuration list for PBXNativeTarget "TideRefreshDemo" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				9624AF1FD0AEDC4176C772BA /* Debug */,
-				37EED0C8C7E581F478FFA5C4 /* Release */,
+				EDC260D401ECF635ADC96C2C /* Release */,
+				AD96C425CA04D7E12455E10A /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C79C3AFCD3BCC6438111B29B /* Build configuration list for PBXNativeTarget "TideRefreshDemo" */ = {
+		6DA4ED4B6E47BDB03F3C97B9 /* Build configuration list for PBXNativeTarget "TideRefreshTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				B072CAA61B71EEE73F107B48 /* Release */,
-				B0A7A273B267740334054198 /* Debug */,
+				4E1A6A7B84A1B114E009A036 /* Release */,
+				924399367AA60549FB4C91DC /* Debug */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -570,24 +582,24 @@
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
-		008F670E1123E285D74BC108 /* XCLocalSwiftPackageReference ".." */ = {
+		3AF5B7AEF044691C2DAA2BCE /* XCLocalSwiftPackageReference ".." */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ..;
 		};
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		079AC40CA99870AD55838C92 /* TideRefresh */ = {
+		854AD3A109EB1E2CAD90740C /* TideRefresh */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 008F670E1123E285D74BC108 /* XCLocalSwiftPackageReference ".." */;
+			package = 3AF5B7AEF044691C2DAA2BCE /* XCLocalSwiftPackageReference ".." */;
 			productName = TideRefresh;
 		};
-		83E00983B5B518730643574E /* TideRefresh */ = {
+		BDB01ED1C9FB2FE2D5C2D190 /* TideRefresh */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 008F670E1123E285D74BC108 /* XCLocalSwiftPackageReference ".." */;
+			package = 3AF5B7AEF044691C2DAA2BCE /* XCLocalSwiftPackageReference ".." */;
 			productName = TideRefresh;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
-	rootObject = 5EC131A876DB592F0FCB82C9 /* Project object */;
+	rootObject = 6BCC7F9BD1D836F0CB386451 /* Project object */;
 }
