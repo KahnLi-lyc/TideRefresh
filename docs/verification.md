@@ -67,10 +67,12 @@ The test runner now disables parallel simulator testing and the scroll traversal
 tests use explicit slow swipe velocity. All state predicates remain unchanged;
 launch failures and gesture failures are not converted to passing results.
 
-The baseline compiles with the device SDK because hosted runners do not consistently
-include an iOS 18.2 simulator runtime. This still uses the actual Swift 6.0 compiler,
-UIKit SDK, package and demo with a 16.0 deployment target; stable runtime tests run
-as separate simulator jobs. Local Xcode 26.6 simulator debugging failed to establish
+The baseline uses SwiftPM and swiftc directly with the device SDK because hosted
+Xcode 16.2 runners intermittently cannot connect to CoreSimulator, even for generic
+device destination selection and platform installation. `verify-baseline.sh`
+compiles the package and all demo sources to object code using the actual Swift
+6.0 compiler, UIKit SDK and a 16.0 target. The separate stable simulator jobs build,
+link and run the complete Xcode app and tests. Local Xcode 26.6 debugging failed to establish
 its service connection on the current host, so local runtime evidence uses Xcode 27.
 
 ## Remaining Release Gates
