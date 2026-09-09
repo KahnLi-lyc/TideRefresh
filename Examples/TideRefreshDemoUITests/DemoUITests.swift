@@ -239,8 +239,8 @@ final class DemoUITests: XCTestCase {
         let status = app.staticTexts["demo-status"]
         let predicate = NSPredicate(format: "label CONTAINS %@", text)
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: status)
-        // 云端模拟器单次辅助功能查询可能超过 8 秒；这里验证最终状态，不衡量性能。
-        let result = XCTWaiter.wait(for: [expectation], timeout: 30)
+        // 云端模拟器单次辅助功能查询可能超过 30 秒；这里验证最终状态，不衡量性能。
+        let result = XCTWaiter.wait(for: [expectation], timeout: 60)
         if result != .completed {
             capture("Timed out waiting for \(text)", app: app)
             XCTFail("Expected \(text); actual status: \(status.label)", file: file, line: line)
@@ -253,7 +253,7 @@ final class DemoUITests: XCTestCase {
         let status = app.staticTexts["network-status"]
         let predicate = NSPredicate(format: "label CONTAINS %@", text)
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: status)
-        let result = XCTWaiter.wait(for: [expectation], timeout: 30)
+        let result = XCTWaiter.wait(for: [expectation], timeout: 60)
         if result != .completed {
             capture("Timed out waiting for network \(text)", app: app)
             XCTFail("Expected \(text); actual status: \(status.label)", file: file, line: line)

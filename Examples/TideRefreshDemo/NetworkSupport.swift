@@ -605,12 +605,12 @@ private struct MockHTTPStore {
                     storage.sessions[sessionID] = state
                 }
             }
-            return [
-                storage.requestWaiters.removeValue(forKey: sessionID) ?? [],
-                storage.completionWaiters.removeValue(forKey: sessionID) ?? [],
-                storage.cancellationWaiters.removeValue(forKey: sessionID) ?? [],
-            ].flatMap(\.self).map(\.continuation) +
-                (storage.idleWaiters.removeValue(forKey: sessionID) ?? [])
+            let request = storage.requestWaiters.removeValue(forKey: sessionID) ?? []
+            let completion = storage.completionWaiters.removeValue(forKey: sessionID) ?? []
+            let cancellation = storage.cancellationWaiters.removeValue(forKey: sessionID) ?? []
+            let idle = storage.idleWaiters.removeValue(forKey: sessionID) ?? []
+            let counted = request + completion + cancellation
+            return counted.map(\.continuation) + idle
         }
         waiters.forEach { $0.resume() }
     }
