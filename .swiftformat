@@ -3,3 +3,4 @@
 --self remove
 --stripunusedargs closure-only
 --disable redundantSelf
+--exclude **/.build/**

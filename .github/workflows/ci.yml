@@ -16,7 +16,7 @@ jobs:
       - name: Select Swift 6.0 toolchain
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
       - name: Compile with Swift 6.0 and the device SDK
-        run: xcodebuild -project Examples/TideRefreshDemo.xcodeproj -scheme TideRefreshDemo -sdk iphoneos -destination 'generic/platform=iOS' -derivedDataPath .build/DerivedData build CODE_SIGNING_ALLOWED=NO
+        run: bash scripts/verify-baseline.sh
   simulator:
     runs-on: macos-26
     strategy:

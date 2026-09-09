@@ -2,11 +2,14 @@
 
 ## Milestones
 
-- [ ] P0: conventions, SPM package, MIT, example shell, CI entry points.
-- [ ] P1: state machine, scroll geometry, inset ownership, header and footer.
-- [ ] P2: async and callback operations, cancellation, pagination coordinator.
-- [ ] P3: standard/frame animators, Lottie example, accessibility and iPad.
-- [ ] P4: English/Chinese README, DocC, migration, screenshots and verification.
+- [x] P0: conventions, SPM package, MIT, example shell, CI entry points.
+- [x] P1: state machine, scroll geometry, inset ownership, header and footer.
+- [x] P2: async and callback operations, cancellation, pagination coordinator.
+- [x] P3: standard/frame animators, Lottie example, accessibility and iPad.
+- [x] P4: English/Chinese README, DocC, migration, screenshots and verification.
+
+Implementation is delivered as an unreleased 0.1 candidate. Open release gates
+are tracked separately in [release-checklist.md](release-checklist.md).
 
 ## Defaults
 
