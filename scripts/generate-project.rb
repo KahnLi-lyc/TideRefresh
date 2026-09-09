@@ -19,9 +19,11 @@ end
 
 app = project.new_target(:application, 'TideRefreshDemo', :ios, '16.0')
 tests = project.new_target(:unit_test_bundle, 'TideRefreshTests', :ios, '16.0')
+ui_tests = project.new_target(:ui_test_bundle, 'TideRefreshDemoUITests', :ios, '16.0')
 tests.add_dependency(app)
-[[app, 'TideRefreshDemo/**/*.swift'], [tests, '../Tests/TideRefreshTests/**/*.swift']].each do |target, pattern|
-  attach_package(project, target, package)
+ui_tests.add_dependency(app)
+[[app, 'TideRefreshDemo/**/*.swift'], [tests, '../Tests/TideRefreshTests/**/*.swift'], [ui_tests, 'TideRefreshDemoUITests/**/*.swift']].each do |target, pattern|
+  attach_package(project, target, package) unless target == ui_tests
   Dir.glob(File.join(root, 'Examples', pattern)).sort.each do |path|
     ref = project.main_group.new_file(Pathname.new(path).relative_path_from(Pathname.new(File.join(root, 'Examples'))).to_s)
     target.source_build_phase.add_file_reference(ref)
@@ -40,7 +42,11 @@ tests.add_dependency(app)
 end
 app.build_configurations.each do |config|
   config.build_settings['INFOPLIST_KEY_UILaunchScreen_Generation'] = 'YES'
+  config.build_settings['INFOPLIST_KEY_UIApplicationSceneManifest_Generation'] = 'YES'
   config.build_settings['INFOPLIST_KEY_UISupportedInterfaceOrientations'] = 'UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown'
+end
+ui_tests.build_configurations.each do |config|
+  config.build_settings['TEST_TARGET_NAME'] = 'TideRefreshDemo'
 end
 tests.build_configurations.each do |config|
   config.build_settings['TEST_HOST'] = '$(BUILT_PRODUCTS_DIR)/TideRefreshDemo.app/TideRefreshDemo'
@@ -49,6 +55,7 @@ end
 scheme = Xcodeproj::XCScheme.new
 scheme.add_build_target(app)
 scheme.add_test_target(tests)
+scheme.add_test_target(ui_tests)
 scheme.set_launch_target(app)
 scheme.save_as(project.path, 'TideRefreshDemo', true)
 project.save
