@@ -141,11 +141,18 @@ final class DemoUITests: XCTestCase {
         return app
     }
 
-    private func waitForStatus(_ text: String, in app: XCUIApplication) {
+    private func waitForStatus(_ text: String, in app: XCUIApplication,
+                               file: StaticString = #filePath, line: UInt = #line)
+    {
         let status = app.staticTexts["demo-status"]
         let predicate = NSPredicate(format: "label CONTAINS %@", text)
         let expectation = XCTNSPredicateExpectation(predicate: predicate, object: status)
-        XCTAssertEqual(XCTWaiter.wait(for: [expectation], timeout: 8), .completed)
+        // 云端模拟器单次辅助功能查询可能超过 8 秒；这里验证最终状态，不衡量性能。
+        let result = XCTWaiter.wait(for: [expectation], timeout: 30)
+        if result != .completed {
+            capture("Timed out waiting for \(text)", app: app)
+            XCTFail("Expected \(text); actual status: \(status.label)", file: file, line: line)
+        }
     }
 
     private func capture(_ name: String, app: XCUIApplication) {
