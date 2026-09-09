@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "EC1598281F2BC3D4BF031300"
+               BlueprintIdentifier = "13288834846368499DB79FB4"
                BuildableName = "TideRefreshDemo.app"
                BlueprintName = "TideRefreshDemo"
                ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
@@ -30,7 +30,7 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EC1598281F2BC3D4BF031300"
+            BlueprintIdentifier = "13288834846368499DB79FB4"
             BuildableName = "TideRefreshDemo.app"
             BlueprintName = "TideRefreshDemo"
             ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
@@ -41,7 +41,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "FDB4AF1D68FC2760BC5914CF"
+               BlueprintIdentifier = "563FC91DE70D3D708AAC1566"
                BuildableName = "TideRefreshTests.xctest"
                BlueprintName = "TideRefreshTests"
                ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
@@ -51,7 +51,7 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "E5255E5BD6AC533479A4DFF2"
+               BlueprintIdentifier = "1929BB6992BCF503F401E0C6"
                BuildableName = "TideRefreshDemoUITests.xctest"
                BlueprintName = "TideRefreshDemoUITests"
                ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
@@ -73,7 +73,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EC1598281F2BC3D4BF031300"
+            BlueprintIdentifier = "13288834846368499DB79FB4"
             BuildableName = "TideRefreshDemo.app"
             BlueprintName = "TideRefreshDemo"
             ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
@@ -90,7 +90,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "EC1598281F2BC3D4BF031300"
+            BlueprintIdentifier = "13288834846368499DB79FB4"
             BuildableName = "TideRefreshDemo.app"
             BlueprintName = "TideRefreshDemo"
             ReferencedContainer = "container:TideRefreshDemo.xcodeproj">
