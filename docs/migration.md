@@ -3,9 +3,9 @@
 TideRefresh is an original UIKit implementation, not a drop-in replacement for
 MJRefresh, ESPullToRefresh, CRRefresh, KafkaRefresh, or UIScrollView-InfiniteScroll.
 Those projects are conceptual references documented in [provenance](references.md).
-No release tag currently exists; see [installation](../README.md#status-and-installation).
-The dependent PRs remain unmerged, so use `codex/p4-documentation` for the full
-candidate; `main` currently contains only the bootstrap.
+The 0.1.0-beta.1 prerelease is available; see
+[installation](../README.md#status-and-installation). Use the version tag for
+repeatable integration and `main` only when intentionally evaluating unreleased work.
 
 TideRefresh 并非旧组件的同名 API 替换。迁移时先保留业务网络层与数据源，再逐步替换
 刷新展示和分页调度。支持范围为 Swift 6、iOS/iPadOS 16+ 的纵向 UIKit 列表。

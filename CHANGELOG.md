@@ -1,9 +1,23 @@
 # Changelog
 
-## Unreleased — 0.1 Candidate
+## Unreleased - 0.1.0-beta.2 Candidate
 
-No version has been tagged or released. Entries describe the implementation
-under review, not a published compatibility guarantee.
+### Added
+
+- Network Scenarios demo backed by a real `URLSession` and local deterministic
+  `URLProtocol` responses, with controls for scenarios, latency, cancellation,
+  reset, refresh, and pagination.
+- Mock HTTP coverage for empty and short pages, exhaustion, HTTP 500/503,
+  footer retry, timeout, malformed JSON, cancellation, and refresh preemption.
+- Ten API-client tests and six UI scenarios for network request construction,
+  decoding, ordering, state preservation, retry, cancellation, and lifecycle.
+
+### Changed
+
+- Corrected installation and verification documentation now that
+  `0.1.0-beta.1` is available and the complete candidate is on `main`.
+
+## 0.1.0-beta.1 - 2026-09-09
 
 ### Added
 

@@ -8,6 +8,7 @@ enum DemoMode: String, CaseIterable {
     case pull
     case prefetch
     case frames
+    case network
 
     var title: String {
         switch self {
@@ -17,6 +18,7 @@ enum DemoMode: String, CaseIterable {
         case .pull: "Pull Footer"
         case .prefetch: "Prefetch Footer"
         case .frames: "Frame Animation"
+        case .network: "Network Scenarios"
         }
     }
 
@@ -28,6 +30,7 @@ enum DemoMode: String, CaseIterable {
         case .pull: "arrow.up.to.line"
         case .prefetch: "arrow.down.forward.and.arrow.up.backward"
         case .frames: "photo.stack"
+        case .network: "network"
         }
     }
 
@@ -40,7 +43,7 @@ enum DemoMode: String, CaseIterable {
     }
 }
 
-struct DemoItem: Hashable {
+struct DemoItem: Codable, Hashable {
     let id: Int
     let title: String
     let subtitle: String

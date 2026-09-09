@@ -8,8 +8,9 @@
 - [x] P3: standard/frame animators, Lottie example, accessibility and iPad.
 - [x] P4: English/Chinese README, DocC, migration, screenshots and verification.
 
-Implementation is delivered as an unreleased 0.1 candidate. Open release gates
-are tracked separately in [release-checklist.md](release-checklist.md).
+The initial implementation shipped as the 0.1.0-beta.1 prerelease. Subsequent
+candidate work and open release gates are tracked in the changelog and
+[release checklist](release-checklist.md).
 
 ## Defaults
 

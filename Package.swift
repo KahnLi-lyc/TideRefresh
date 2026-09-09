@@ -8,7 +8,11 @@ let package = Package(
     products: [.library(name: "TideRefresh", targets: ["TideRefresh"])],
     targets: [
         .target(name: "TideRefresh", resources: [.process("Resources")]),
-        .testTarget(name: "TideRefreshTests", dependencies: ["TideRefresh"]),
+        .testTarget(
+            name: "TideRefreshTests",
+            dependencies: ["TideRefresh"],
+            exclude: ["DemoAPIClientTests.swift"]
+        ),
     ],
     swiftLanguageModes: [.v6]
 )
