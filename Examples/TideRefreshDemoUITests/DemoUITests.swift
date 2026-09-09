@@ -25,7 +25,7 @@ final class DemoUITests: XCTestCase {
         start.press(forDuration: 0.05, thenDragTo: end)
         waitForStatus("Refreshes: 2", in: app)
         for _ in 0 ..< 12 where !list.cells["item-19"].isHittable {
-            list.swipeUp()
+            list.swipeUp(velocity: .slow)
         }
         XCTAssertTrue(list.cells["item-19"].exists)
         let bottom = list.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.85))
@@ -40,7 +40,7 @@ final class DemoUITests: XCTestCase {
         waitForStatus("Items: 20", in: app)
         let list = app.tables["demo-list"]
         for _ in 0 ..< 12 where !app.staticTexts["demo-status"].label.contains("Items: 40") {
-            list.swipeUp()
+            list.swipeUp(velocity: .slow)
         }
         waitForStatus("Items: 40", in: app)
         capture("Prefetch footer", app: app)
@@ -51,7 +51,7 @@ final class DemoUITests: XCTestCase {
         waitForStatus("Items: 20", in: app)
         let list = app.tables["demo-list"]
         for _ in 0 ..< 12 where !app.staticTexts["demo-status"].label.contains("Items: 40") {
-            list.swipeUp()
+            list.swipeUp(velocity: .slow)
         }
         waitForStatus("Items: 40", in: app)
         capture("Automatic footer", app: app)

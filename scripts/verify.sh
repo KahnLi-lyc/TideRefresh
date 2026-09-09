@@ -5,4 +5,5 @@ action="${1:-test}"
 destination="${2:-platform=iOS Simulator,name=iPhone 17 Pro,OS=latest}"
 xcodebuild -project Examples/TideRefreshDemo.xcodeproj \
   -scheme TideRefreshDemo -destination "$destination" \
+  -parallel-testing-enabled NO \
   -derivedDataPath .build/DerivedData "$action" CODE_SIGNING_ALLOWED=NO

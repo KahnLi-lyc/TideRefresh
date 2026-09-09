@@ -60,6 +60,13 @@ actual status and screenshot on failure. Three affected scenarios passed locally
 after this change. Final complete CI conclusions remain available on PR #2/#3;
 the earlier failed runs and their result bundles are retained for diagnosis.
 
+The initial integration run (PR #4) then exposed simulator launch failures
+(`Timed out while acquiring background assertion`) on iPad, and an iPhone
+default-speed swipe was interpreted as a cell selection, opening its detail.
+The test runner now disables parallel simulator testing and the scroll traversal
+tests use explicit slow swipe velocity. All state predicates remain unchanged;
+launch failures and gesture failures are not converted to passing results.
+
 The baseline compiles with the device SDK because hosted runners do not consistently
 include an iOS 18.2 simulator runtime. This still uses the actual Swift 6.0 compiler,
 UIKit SDK, package and demo with a 16.0 deployment target; stable runtime tests run
