@@ -49,6 +49,17 @@ UI-test launch flag, and the replacement screenshot was verified.
   compilation and formatting passed at report creation. Refer to the PR checks for
   the latest stable iPhone/iPad test conclusions and downloadable result bundles.
 
+Initial complete CI runs passed all 30 unit tests and 10 UI tests on iPad (PR #2)
+and iPhone (PR #3), using iOS/iPadOS 26.5 on Xcode 26.6. Other jobs exposed
+intermittent UI status timeouts: accessibility queries took 7-12 seconds against
+an 8-second budget. The iPad failure recording already showed the expected
+completed refresh; the iPhone short-content recording still showed loading.
+An unchanged rerun passed the original iPad scenario but timed out in another.
+UI waits now allow 30 seconds for the same state predicates and attach the
+actual status and screenshot on failure. Three affected scenarios passed locally
+after this change. Final complete CI conclusions remain available on PR #2/#3;
+the earlier failed runs and their result bundles are retained for diagnosis.
+
 The baseline compiles with the device SDK because hosted runners do not consistently
 include an iOS 18.2 simulator runtime. This still uses the actual Swift 6.0 compiler,
 UIKit SDK, package and demo with a 16.0 deployment target; stable runtime tests run
