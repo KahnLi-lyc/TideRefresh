@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 60;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -14,8 +14,8 @@
 		6A88570E182FB53001DC7194 /* DemoModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = FF2DA80575B93835DCB56C7F /* DemoModels.swift */; };
 		82F5CC6A847066660661187E /* NetworkDemoViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 998A4CFBB7CD071B863F162A /* NetworkDemoViewController.swift */; };
 		90C643726AB2E152D44FC7C1 /* RefreshControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */; };
-		A11111111111111111111111 /* RefreshAnimatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22222222222222222222222 /* RefreshAnimatorTests.swift */; };
 		931C1D75C1AA73144B3F5CB2 /* DemoUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22B96A7C91ABC0AD7240CC0B /* DemoUITests.swift */; };
+		A11111111111111111111111 /* RefreshAnimatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A22222222222222222222222 /* RefreshAnimatorTests.swift */; };
 		A485F50D27C3A83A9598BFF8 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F983C95C9773639F15AC3B6 /* Foundation.framework */; };
 		AEA64D498DEE0092A5335123 /* DemoDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1E46645C8B9F282F09BBD7C7 /* DemoDetailViewController.swift */; };
 		C33179D85972304D47A7C056 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2F983C95C9773639F15AC3B6 /* Foundation.framework */; };
@@ -59,8 +59,8 @@
 		908C7BBAD67064FD4798AA74 /* DemoListViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoListViewController.swift; path = TideRefreshDemo/DemoListViewController.swift; sourceTree = "<group>"; };
 		94B952C9DB4439A12E9CE992 /* DemoViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoViewController.swift; path = TideRefreshDemo/DemoViewController.swift; sourceTree = "<group>"; };
 		998A4CFBB7CD071B863F162A /* NetworkDemoViewController.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = NetworkDemoViewController.swift; path = TideRefreshDemo/NetworkDemoViewController.swift; sourceTree = "<group>"; };
-		A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshControllerTests.swift; path = ../Tests/TideRefreshTests/RefreshControllerTests.swift; sourceTree = "<group>"; };
 		A22222222222222222222222 /* RefreshAnimatorTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshAnimatorTests.swift; path = ../Tests/TideRefreshTests/RefreshAnimatorTests.swift; sourceTree = "<group>"; };
+		A90FF9D08AC7CDBEF1DFFBF9 /* RefreshControllerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = RefreshControllerTests.swift; path = ../Tests/TideRefreshTests/RefreshControllerTests.swift; sourceTree = "<group>"; };
 		B097B00EC45856B9EEEF7037 /* SceneDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = SceneDelegate.swift; path = TideRefreshDemo/SceneDelegate.swift; sourceTree = "<group>"; };
 		EE3B8175104BCB72164CF398 /* AppDelegate.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = TideRefreshDemo/AppDelegate.swift; sourceTree = "<group>"; };
 		FF2DA80575B93835DCB56C7F /* DemoModels.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = DemoModels.swift; path = TideRefreshDemo/DemoModels.swift; sourceTree = "<group>"; };
@@ -224,11 +224,9 @@
 				Base,
 			);
 			mainGroup = 500F62947BFB7AF0CB8DABE6;
-			minimizedProjectReferenceProxies = 0;
 			packageReferences = (
 				3AF5B7AEF044691C2DAA2BCE /* XCLocalSwiftPackageReference ".." */,
 			);
-			preferredProjectObjectVersion = 100;
 			productRefGroup = 9A1367E033651B537B945453 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -395,6 +393,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
+				DEVELOPMENT_TEAM = 8VSRZ46CAY;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemoUITests;
@@ -412,6 +411,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
+				DEVELOPMENT_TEAM = 8VSRZ46CAY;
 				GENERATE_INFOPLIST_FILE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemoUITests;
@@ -508,12 +508,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemo;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
@@ -529,12 +533,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				CODE_SIGNING_ALLOWED = NO;
+				DEVELOPMENT_TEAM = "";
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown";
 				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.kahnli.TideRefreshDemo;
 				SDKROOT = iphoneos;
 				SUPPORTS_MACCATALYST = NO;
