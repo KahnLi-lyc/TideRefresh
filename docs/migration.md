@@ -8,13 +8,14 @@ The 0.1.0-beta.1 prerelease is available; see
 repeatable integration and `main` only when intentionally evaluating unreleased work.
 
 TideRefresh 并非旧组件的同名 API 替换。迁移时先保留业务网络层与数据源，再逐步替换
-刷新展示和分页调度。支持范围为 Swift 6、iOS/iPadOS 16+ 的纵向 UIKit 列表。
+刷新展示和分页调度。支持范围为 Swift 6、iOS/iPadOS 16+ 的纵向 UIKit 列表，以及横向
+`UIScrollView` / `UICollectionView`。
 
 ## Map Responsibilities / 职责映射
 
 | Existing responsibility / 原职责 | TideRefresh API / 迁移目标 |
 | --- | --- |
-| Header/footer attachment | `try RefreshController(scrollView:)` |
+| Header/footer attachment | `try RefreshController(scrollView:axis:)`; axis defaults to `.vertical` |
 | Begin refresh | Install handlers, then `beginRefreshing()` |
 | Begin next page | `beginLoadingMore()` |
 | Callback completion | `RefreshOperation.finish(.success(hasMoreData: ...))` |
@@ -31,7 +32,9 @@ TideRefresh 并非旧组件的同名 API 替换。迁移时先保留业务网络
 1. Remove the old refresh attachment, observers, inset adjustments, and completion
    calls for this scroll view. Keep the application's delegate and data source.
    先移除该列表的旧刷新控件和对应 inset 调整，避免两套组件同时管理边界。
-2. Attach one controller with `try`. Keep owners weak in retained callbacks.
+2. Attach one controller with `try`. Existing calls remain vertical; pass
+   `axis: .horizontal` for a horizontal scroll or collection view. Keep owners
+   weak in retained callbacks.
    同一滚动视图只挂载一个控制器，重复挂载会抛出错误。
 3. Use `setAsyncHandlers` for async loaders, or `onRefresh` / `onLoadMore` for
    callback APIs. Install handlers before beginning a refresh. Async handlers
@@ -64,11 +67,16 @@ TideRefresh 并非旧组件的同名 API 替换。迁移时先保留业务网络
 - Animators control appearance, not network requests or data ownership. Use
   distinct unparented animator views for header and footer. Frame animation takes
   decoded `UIImage` values; optional Lottie lives in `Examples/LottieDemo`.
+- Horizontal refresh uses semantic `.leading` and pagination uses `.trailing`.
+  LTR/RTL physical mapping is captured at attachment time, so detach and reattach
+  after changing layout direction. Omitted horizontal animators are rings; custom
+  animators must be initialized with the matching leading/trailing edge. Existing
+  `headerHeight` / `footerHeight` values become extents along the horizontal axis.
 - UIKit callbacks run on MainActor. Keep network payloads `Sendable`, avoid
   `@unchecked Sendable`, and do not move UI mutations into the loader.
-- No horizontal/inverted-chat/nested-scroll/SwiftUI/Catalyst compatibility layer
-  is provided. Validate iOS 16 runtime behavior before treating that support as
-  release-qualified.
+- Horizontal `UITableView`, inverted chat, nested-scroll arbitration, SwiftUI,
+  and Catalyst compatibility layers are not provided. Validate iOS 16 runtime
+  behavior before treating that support as release-qualified.
 
 See the [English](../README.md) and [中文](../README.zh-Hans.md) READMEs for complete
 network, callback, animation, and lifecycle examples.

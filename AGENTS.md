@@ -4,8 +4,9 @@
 
 - Independent Swift 6 UIKit library; Swift 6.0-compatible syntax and APIs.
 - iOS/iPadOS 16+, SPM only, no dependencies in the core library.
-- Support vertical UIScrollView, UITableView and UICollectionView. Horizontal,
-  inverted chat, nested scrolling arbitration, SwiftUI and Catalyst are out of scope.
+- Support vertical UIScrollView, UITableView and UICollectionView, plus horizontal
+  UIScrollView and UICollectionView. Horizontal UITableView, inverted chat, nested
+  scrolling arbitration, SwiftUI and Catalyst are out of scope.
 - Preserve the application's delegate and inset changes. No global swizzling.
 
 ## Swift and UIKit

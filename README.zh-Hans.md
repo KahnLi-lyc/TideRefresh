@@ -2,16 +2,16 @@
 
 [English](README.md)
 
-面向 iOS/iPadOS 16+ 的 Swift 6 UIKit 刷新与分页组件，支持纵向
-`UIScrollView`、`UITableView` 和 `UICollectionView`。通过 Swift Package Manager
-集成，**核心库零第三方依赖**。支持下拉刷新、上拉/自动/预加载分页、有上限的短内容补页、
+面向 iOS/iPadOS 16+ 的 Swift 6 UIKit 刷新与分页组件。纵向支持 `UIScrollView`、
+`UITableView` 和 `UICollectionView`，横向支持 `UIScrollView` 和 `UICollectionView`。
+通过 Swift Package Manager 集成，**核心库零第三方依赖**。支持下拉刷新、上拉/自动/预加载分页、有上限的短内容补页、
 async 和回调式取消，以及可替换的动画。不会替换业务的滚动代理，也不使用全局 swizzling。
 数据数组和数据源仍由应用管理。
 
 ## 当前状态与安装
 
 最新预发布版本为 **0.1.0-beta.1**。当前分支准备尚未发布的
-**0.1.0-beta.2** 网络 Demo 候选版本，不修改公共 API。在 Xcode 的
+**0.1.0-beta.2** 候选版本，其中包含横向刷新与分页公共 API。在 Xcode 的
 Add Package Dependencies 中添加仓库，或使用：
 
 ```swift
@@ -26,8 +26,8 @@ dependencies: [
 在目标的依赖中添加 `.product(name: "TideRefresh", package: "TideRefresh")`。
 只有在明确测试未发布变更时才依赖 `main`。应用应提交解析后的依赖版本以便复现。
 
-要求 Swift 6.0 兼容语法、UIKit、iOS/iPadOS 16+。当前不覆盖横向滚动、倒置聊天列表、
-嵌套滚动仲裁、SwiftUI、macOS 和 Mac Catalyst。
+要求 Swift 6.0 兼容语法、UIKit、iOS/iPadOS 16+。当前不覆盖横向 `UITableView`、
+倒置聊天列表、嵌套滚动仲裁、SwiftUI、macOS 和 Mac Catalyst。
 
 ## async 刷新与游标分页
 
@@ -230,9 +230,9 @@ let controller = try RefreshController(
 
 | 配置或结果 | 行为 |
 | --- | --- |
-| `.pull` | 向上拉过 footer 阈值并松手后加载。 |
-| `.automatic`（默认） | 拖动或减速滚动到内容底部时加载。 |
-| `.prefetch(distance:)` | 滚动进入底部指定距离内时预加载。 |
+| `.pull` | 拉过语义 trailing 的分页控件阈值，松手后加载。 |
+| `.automatic`（默认） | 拖动或减速到 trailing 时加载。 |
+| `.prefetch(distance:)` | 滚动进入 trailing 指定距离内时预加载。 |
 | `.success(hasMoreData: false)` | 显示没有更多数据，停止下一页请求。 |
 | `.failure` | 停止加载；失败 footer 可点击重试。 |
 | `.cancelled` | 结束操作，不显示失败。 |
@@ -242,6 +242,37 @@ let controller = try RefreshController(
 或预算用尽都会停止。刷新重置预算。`resetPagination(hasMoreData:)` 重置展示层的分页
 可用性与预算，**不会清除协调器游标**；切换筛选条件或查询时应重新刷新协调器。
 也可手动调用 `beginLoadingMore()`。
+
+## 横向滚动与 RTL
+
+`RefreshAxis.vertical` 仍是默认值，原有挂载调用保持纵向且源码兼容。横向滚动视图或集合
+视图需显式传入 `.horizontal`：
+
+```swift
+let controller = try RefreshController(
+    scrollView: collectionView,
+    axis: .horizontal,
+    configuration: RefreshConfiguration(loadMoreMode: .pull)
+)
+```
+
+刷新位于语义 `leading`，分页位于语义 `trailing`。控制器在挂载时读取滚动视图的
+`effectiveUserInterfaceLayoutDirection`：LTR 下 leading 在左、trailing 在右；RTL 下
+物理方向相反。该映射在本次挂载期间固定；运行时改变 `semanticContentAttribute` 或有效
+布局方向后，需要 detach 并重新挂载。
+
+pull、automatic、prefetch、程序化刷新、有上限的短内容补页及刷新抢占分页都使用相同的
+语义边缘。`beginRefreshing()` 在 loading 期间把位置固定到 leading。`headerHeight` 和
+`footerHeight` 为保持源码兼容继续沿用原名，在横向时表示所选轴上的控件 extent。
+
+纵向挂载只管理 `alwaysBounceVertical` 和 top/bottom inset 增量；横向挂载只管理
+`alwaysBounceHorizontal` 及 leading/trailing 映射到的物理 inset 增量。detach 会恢复该轴
+原始 bounce 值，并且只移除组件拥有的增量，保留宿主对四条边的修改。
+
+未传 animator 时，纵向默认使用 `DefaultRefreshAnimator`，横向默认使用
+`RingRefreshAnimator`。自定义 animator 协议不会由控制器注入 edge，因此横向 header
+和 footer 应分别创建 `.leading` 与 `.trailing` 实例。需要横向文字样式时，
+`DefaultRefreshAnimator` 同样支持这两个边缘：箭头跟随语义方向，`lastUpdated` 仅用于刷新角色。
 
 ## 生命周期、所有权与 Insets
 
@@ -253,7 +284,7 @@ let controller = try RefreshController(
 同一滚动视图重复挂载会抛出 `.alreadyAttached`。动画视图共享或已经有父视图时抛出
 `.sharedAnimatorView`。替换组件前先 detach，每个边缘使用独立动画实例和视图。
 
-组件使用 `adjustedContentInset` 计算边界，使用容器宽度布局，适应 iPad 和分屏。
+组件使用 `adjustedContentInset` 计算边界，使用容器的交叉轴尺寸布局，适应 iPad 和分屏。
 宿主改变 inset 时按增量修改，例如 `tableView.contentInset.bottom += keyboardDelta`，
 组件移除自己的增量时会保留宿主变化。绝对赋值表示包含组件当前贡献在内的总 inset；
 组件无法从赋值本身推断调用者是否打算包含这部分贡献。
@@ -294,8 +325,9 @@ let controller = try RefreshController(
 ## Demo 与验证
 
 打开 `Examples/TideRefreshDemo.xcodeproj`，选择 `TideRefreshDemo`，可在 iPhone、
-iPad、模拟器或真机运行。示例页面覆盖列表、网格、短内容补页、上拉 footer、预加载、
-序列帧、四种无文字样式、可控失败及 **Network Scenarios**。
+iPad、模拟器或真机运行。示例页面覆盖纵向列表/网格、**Horizontal Collection**、短内容
+补页、上拉 footer、预加载、序列帧、四种无文字样式、可控失败及 **Network Scenarios**。
+传入启动参数 `--force-rtl` 可稳定进入 RTL 横向 Demo 与 UI 测试路径。
 
 Network Scenarios 使用真实的临时 `URLSession` 发起请求，由本地 `URLProtocol` Mock
 返回 HTTP 响应，不访问公网。可选择场景和延迟，并通过工具栏执行刷新、加载更多、取消、
@@ -327,10 +359,10 @@ gem install xcodeproj -v 1.28.1
 ruby -e 'gem "xcodeproj", "1.28.1"; load "scripts/generate-project.rb"'
 ```
 
-当前分支证据：Xcode 27 beta 使用 Swift 6 模式编译通过。在 iPhone 16 / iOS 18.2 与
-iPad Pro 11-inch (M4) / iPadOS 18.5 上，40 个 XCTest 和 16 个 UI 场景全部通过。
-最终 Mock 传输层重构后，10 个 API 客户端测试与 6 个网络 UI 场景也已定向重跑通过。
-SwiftFormat 和空白检查通过。Xcode 16.2 基线及 Xcode 26.6 CI 结果记录在本次 PR。
+当前分支证据：Xcode 27 使用 Swift 6 模式编译通过。在 iPhone 16 / iOS 18.2 与 iPad Pro
+11-inch (M4) / iPadOS 18.5 上，57 个 XCTest 和 20 个 UI 场景全部通过，包含横向 LTR/RTL
+拉动与旋转。最终 Mock 传输层重构后，10 个 API 客户端测试与 6 个网络 UI 场景也已定向
+通过。Xcode 16.2 基线及 Xcode 26.6 矩阵仍由 CI 验证，不计入本地结果。
 
 自动化覆盖可访问控件、窗口尺寸变化和方向变化；人工 VoiceOver、真机分屏/Stage Manager
 仍待检查。强制深色模式的大字体截图已人工查看，见[验证报告](docs/verification.md)；DocC 已编译成功。

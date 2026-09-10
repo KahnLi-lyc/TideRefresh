@@ -1,6 +1,6 @@
 # ``TideRefresh``
 
-Attach cancellable refresh and pagination controls to vertical UIKit scroll views.
+Attach cancellable refresh and pagination controls to vertical or horizontal UIKit scroll views.
 
 ## Overview
 
@@ -60,7 +60,26 @@ Async handlers finish automatically. Cancellation does not present an error.
 
 Host inset edits should use deltas while attached. Absolute inset assignments
 represent the total including active component contributions. Boundaries use
-`adjustedContentInset`; control width comes from the scroll container.
+`adjustedContentInset`; control cross-axis size comes from the scroll container.
+
+## Axis and Semantic Edges
+
+``RefreshAxis/vertical`` is the default, so existing ``RefreshController`` calls
+remain source-compatible. Use ``RefreshAxis/horizontal`` for horizontal
+`UIScrollView` and `UICollectionView` content. ``RefreshEdge/top`` and
+``RefreshEdge/bottom`` identify vertical refresh and pagination; horizontal
+operations report ``RefreshEdge/leading`` and ``RefreshEdge/trailing``.
+
+Horizontal physical edges follow the scroll view's effective LTR or RTL direction
+at attachment time. The mapping is fixed until detach; reattach after changing the
+effective layout direction. Pull, automatic, prefetch, programmatic refresh, and
+bounded short-content filling all use semantic edges. Configuration properties
+`headerHeight` and `footerHeight` name the control extent along the selected axis.
+
+Omitted animators default to ``DefaultRefreshAnimator`` vertically and
+``RingRefreshAnimator`` horizontally. Custom horizontal animators must be created
+for the appropriate leading or trailing edge because ``RefreshAnimator`` does not
+receive its edge from the controller.
 
 ## Pagination and Presentation
 
@@ -82,14 +101,14 @@ state and progress, apply ``RefreshTheme`` / ``RefreshStrings``, and stop on det
 Progress may exceed one. Lottie is available only in a separate optional example
 package pinned to 4.5.2; it is not a core dependency.
 
-The latest prerelease is 0.1.0-beta.1. The beta.2 candidate adds local network
-Demo and test coverage without changing this public API. iOS 16 runtime validation
-remains a 1.0 release gate. Horizontal scrolling, inverted chat, nested scrolling
+The latest prerelease is 0.1.0-beta.1. The beta.2 candidate adds horizontal
+refresh and pagination plus local network Demo coverage. iOS 16 runtime validation
+remains a 1.0 release gate. Horizontal `UITableView`, inverted chat, nested scrolling
 arbitration, SwiftUI, and Catalyst are outside the supported scope.
-Local Xcode 27 beta evidence includes 40 passing XCTest cases and 16 passing UI
-scenarios on iPhone and iPad. See the repository pull requests for current Xcode
-16.2 and Xcode 26.6 CI results. Manual accessibility/device checks and iOS 16
-runtime verification remain release gates.
+Local Xcode 27 evidence includes 57 passing XCTest cases and 20 passing UI
+scenarios on both iPhone and iPad, including horizontal LTR/RTL pulls and rotation.
+Xcode 16.2 and Xcode 26.6 remain CI checks. Manual accessibility/device checks and
+iOS 16 runtime verification remain release gates.
 
 ## Topics
 
@@ -100,6 +119,7 @@ runtime verification remain release gates.
 - ``RefreshOperation``
 - ``RefreshResult``
 - ``RefreshState``
+- ``RefreshAxis``
 - ``RefreshEdge``
 
 ### Pagination

@@ -4,6 +4,13 @@
 
 ### Added
 
+- `RefreshAxis.horizontal` attachment with semantic leading refresh and trailing
+  pagination, including fixed-at-attach LTR/RTL edge mapping.
+- Horizontal pull, automatic and prefetch geometry, programmatic refresh anchoring,
+  bounded short-content filling, inset and bounce ownership, and lifecycle coverage.
+- Leading/trailing animator semantics and ring defaults for horizontal attachments.
+- Horizontal Collection demo with deterministic `--force-rtl` UI coverage and
+  rotation validation.
 - Network Scenarios demo backed by a real `URLSession` and local deterministic
   `URLProtocol` responses, with controls for scenarios, latency, cancellation,
   reset, refresh, and pagination.
@@ -14,8 +21,10 @@
 
 ### Changed
 
+- `RefreshController.init` accepts `axis: RefreshAxis = .vertical`; existing calls
+  remain source-compatible. `headerHeight` and `footerHeight` now document axis extent.
 - Corrected installation and verification documentation now that
-  `0.1.0-beta.1` is available and the complete candidate is on `main`.
+  `0.1.0-beta.1` is available.
 
 ## 0.1.0-beta.1 - 2026-09-09
 

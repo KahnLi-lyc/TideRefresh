@@ -1,9 +1,28 @@
 # Verification Report
 
-Date: 2026-09-09. Candidate: 0.1.0-beta.2 network scenarios.
+Updated: 2026-09-10. Candidate: 0.1.0-beta.2.
 The published 0.1.0-beta.1 tag is unchanged. This report does not declare 1.0 readiness.
 
 ## Local Results
+
+The `codex/horizontal-refresh` feature was verified on 2026-09-10:
+
+| Check | Environment | Result |
+| --- | --- | --- |
+| Generic simulator build | Xcode 27, Swift 6 mode | Passed |
+| DocC | Xcode 27, generic iOS Simulator | Passed |
+| XCTest | iPhone 16, iOS 18.2 | 57 passed |
+| UI scenarios | iPhone 16, iOS 18.2 | 20 passed |
+| XCTest | iPad Pro 11-inch (M4), iPadOS 18.5 | 57 passed |
+| UI scenarios | iPad Pro 11-inch (M4), iPadOS 18.5 | 20 passed |
+| Style | SwiftFormat 0.61.1 and `git diff --check` | Passed |
+
+New coverage verifies vertical, horizontal LTR and horizontal RTL geometry;
+semantic operation edges; physical inset and bounce ownership; programmatic
+refresh anchoring; short-content filling; animator roles; horizontal pull refresh
+and pagination; and rotation. The horizontal UI navigation stops when the semantic
+trailing item becomes hittable so different viewport widths do not accidentally
+trigger an extra pull page before the gesture under test.
 
 The `codex/minimal-refresh-animators` feature was verified on 2026-09-10:
 
@@ -21,8 +40,11 @@ stop, hidden and symbolic terminal states, invalid progress, text-free output an
 footer accessibility state. Loading screenshots for all four styles were exported
 from the iPhone result bundle and visually inspected for layout and clipping.
 
-Xcode 16.2 / Swift 6.0 compilation remains assigned to CI because this host only
-has Xcode 27. The unavailable iOS 16 simulator runtime remains a 1.0 release gate.
+The current horizontal changes have not been rerun locally with Xcode 16.2 or
+Xcode 26.6; both remain assigned to CI. Current local evidence uses Xcode 27, and
+the unavailable iOS 16 simulator runtime remains a 1.0 release gate.
+
+The earlier `codex/network-scenarios` candidate was verified on 2026-09-09:
 
 | Check | Environment | Result |
 | --- | --- | --- |

@@ -2,9 +2,11 @@
 
 [简体中文](README.zh-Hans.md)
 
-A Swift 6 UIKit refresh and pagination library for vertical `UIScrollView`,
-`UITableView`, and `UICollectionView` on iOS/iPadOS 16+. The core is distributed
-with Swift Package Manager and has **zero external dependencies**.
+A Swift 6 UIKit refresh and pagination library for `UIScrollView`, `UITableView`,
+and `UICollectionView` on iOS/iPadOS 16+. Vertical scrolling is supported for all
+three types; horizontal scrolling is supported for `UIScrollView` and
+`UICollectionView`. The core is distributed with Swift Package Manager and has
+**zero external dependencies**.
 
 TideRefresh provides pull-to-refresh, pull/automatic/prefetch footers, bounded
 short-content filling, cancellable async and callback operations, and replaceable
@@ -14,8 +16,8 @@ The application continues to own its items and data source.
 ## Status and Installation
 
 The latest prerelease is **0.1.0-beta.1**. This branch prepares the unreleased
-**0.1.0-beta.2** network-demo candidate without changing the public API. Add the
-package in Xcode's Add Package Dependencies, or use this dependency:
+**0.1.0-beta.2** candidate, including horizontal refresh and pagination APIs. Add
+the package in Xcode's Add Package Dependencies, or use this dependency:
 
 ```swift
 dependencies: [
@@ -31,8 +33,8 @@ Use `main` only when intentionally testing unreleased changes. Commit your
 application's resolved package versions for reproducibility.
 
 Requirements: Swift 6.0-compatible language mode, UIKit, and iOS/iPadOS 16+.
-Horizontal scrolling, inverted chat, nested-scroll arbitration, SwiftUI, macOS,
-and Mac Catalyst are outside the supported scope.
+Horizontal `UITableView`, inverted chat, nested-scroll arbitration, SwiftUI,
+macOS, and Mac Catalyst are outside the supported scope.
 
 ## Async Refresh and Cursor Pagination
 
@@ -236,9 +238,9 @@ let controller = try RefreshController(
 
 | Mode / result | Behavior |
 | --- | --- |
-| `.pull` | Pull upward past the footer threshold, then release. |
-| `.automatic` (default) | Request at the bottom while dragging or decelerating. |
-| `.prefetch(distance:)` | Request within the given distance of the bottom while scrolling. |
+| `.pull` | Pull past the pagination control at semantic trailing, then release. |
+| `.automatic` (default) | Request at trailing while dragging or decelerating. |
+| `.prefetch(distance:)` | Request within the given distance of trailing while scrolling. |
 | `.success(hasMoreData: false)` | Show no-more-data state and stop pagination. |
 | `.failure` | Stop loading; tap the failed footer to retry. |
 | `.cancelled` | Finish without presenting a failure. |
@@ -251,6 +253,43 @@ exhaustion, or the budget stops filling. Refresh resets the budget;
 `resetPagination(hasMoreData:)` resets presentation availability and the budget,
 but does not reset the coordinator's cursor. Refresh the coordinator when the
 query or filter changes. Programmatic `beginLoadingMore()` is also available.
+
+## Horizontal Scrolling and RTL
+
+Existing attachments remain vertical because `RefreshAxis.vertical` is the
+default. Pass `.horizontal` for a horizontal scroll view or collection view:
+
+```swift
+let controller = try RefreshController(
+    scrollView: collectionView,
+    axis: .horizontal,
+    configuration: RefreshConfiguration(loadMoreMode: .pull)
+)
+```
+
+Refresh is presented at semantic `leading` and pagination at semantic `trailing`.
+On attachment, the controller resolves the scroll view's effective layout direction:
+leading maps left and trailing maps right in LTR; those physical edges reverse in
+RTL. This mapping remains fixed for the attachment lifetime. Detach and reattach
+after changing `semanticContentAttribute` or the effective layout direction.
+
+Pull, automatic, prefetch, programmatic refresh, bounded short-content filling,
+and refresh preemption use the same semantic edges in either direction.
+`beginRefreshing()` anchors the scroll position at leading while loading.
+`headerHeight` and `footerHeight` retain their names for source compatibility and
+represent the control extent along the selected axis.
+
+Vertical attachment owns only `alwaysBounceVertical` and top/bottom inset deltas;
+horizontal attachment owns only `alwaysBounceHorizontal` and the physical inset
+deltas mapped from leading/trailing. Detach restores that axis's original bounce
+value and removes only component-owned deltas, preserving host changes on all edges.
+
+When animators are omitted, vertical attachments use `DefaultRefreshAnimator` and
+horizontal attachments use `RingRefreshAnimator`. Custom animator protocols do not
+receive an edge from the controller, so create separate instances with `.leading`
+for refresh and `.trailing` for pagination. `DefaultRefreshAnimator` supports all
+four edges when a text-bearing horizontal presentation is preferred: its arrows
+follow the semantic edge, and `lastUpdated` is shown only for refresh roles.
 
 ## Ownership and Insets
 
@@ -314,9 +353,10 @@ core or default-demo dependency.
 ## Demo and Verification
 
 Open `Examples/TideRefreshDemo.xcodeproj`, select `TideRefreshDemo`, and run on an
-iPhone, iPad, simulator, or physical device. The demo pages include
-table/collection layouts, short content, pull and prefetch footers, frame
-animation, deterministic failures, and **Network Scenarios**.
+iPhone, iPad, simulator, or physical device. The demo pages include vertical
+table/collection layouts, **Horizontal Collection**, short content, pull and
+prefetch footers, frame animation, deterministic failures, and **Network Scenarios**.
+Launch with `--force-rtl` for a deterministic RTL horizontal demo and UI-test entry.
 
 Network Scenarios uses a real ephemeral `URLSession` whose requests are answered
 by a local `URLProtocol` mock, so it never needs internet access. Select a
@@ -353,11 +393,12 @@ gem install xcodeproj -v 1.28.1
 ruby -e 'gem "xcodeproj", "1.28.1"; load "scripts/generate-project.rb"'
 ```
 
-Current branch evidence: Xcode 27 beta compiled in Swift 6 mode. On iPhone 16 /
-iOS 18.2 and iPad Pro 11-inch (M4) / iPadOS 18.5, all 40 XCTest cases and all 16 UI
-scenarios passed. After the final Mock transport refactor, the 10 API-client
-tests and 6 network UI scenarios passed again. SwiftFormat and whitespace checks
-pass. Xcode 16.2 baseline and Xcode 26.6 CI results are recorded on the pull request.
+Current branch evidence: Xcode 27 compiled in Swift 6 mode. On iPhone 16 / iOS
+18.2 and iPad Pro 11-inch (M4) / iPadOS 18.5, all 57 XCTest cases and all 20 UI
+scenarios passed, including horizontal LTR/RTL pulls and rotation. After the final
+Mock transport refactor, the 10 API-client tests and 6 network UI scenarios also
+passed in focused runs. Xcode 16.2 baseline and Xcode 26.6 matrix coverage remain
+CI checks rather than local results.
 
 Automated checks cover accessible controls, resizing, and orientation. Manual
 VoiceOver and on-device split-screen/Stage Manager remain open checks. The forced
