@@ -1,9 +1,17 @@
 import UIKit
 
-/// The edge at which an operation is presented.
-public enum RefreshEdge: Sendable {
+/// The scrolling axis managed by a refresh controller.
+public enum RefreshAxis: Equatable, Sendable {
+    case vertical
+    case horizontal
+}
+
+/// The semantic edge at which an operation is presented.
+public enum RefreshEdge: Equatable, Sendable {
     case top
     case bottom
+    case leading
+    case trailing
 }
 
 /// Observable presentation state, independent of the application's data model.
@@ -33,7 +41,9 @@ public enum LoadMoreMode: Equatable, Sendable {
 
 /// Trigger geometry and behavior. Invalid dimensions fall back to safe defaults.
 public struct RefreshConfiguration: Sendable {
+    /// The refresh control extent along the selected axis.
     public var headerHeight: CGFloat
+    /// The load-more control extent along the selected axis.
     public var footerHeight: CGFloat
     public var loadMoreMode: LoadMoreMode
     public var isHapticsEnabled: Bool

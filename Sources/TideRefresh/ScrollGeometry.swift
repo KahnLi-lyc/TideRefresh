@@ -3,29 +3,50 @@ import UIKit
 /// Pure scroll calculations exclude insets owned by the refresh controller.
 struct ScrollGeometry {
     let offset: CGFloat
-    let contentHeight: CGFloat
-    let viewportHeight: CGFloat
-    let topInset: CGFloat
-    let bottomInset: CGFloat
+    let contentLength: CGFloat
+    let viewportLength: CGFloat
+    let lowerInset: CGFloat
+    let upperInset: CGFloat
+    let isReversed: Bool
 
-    var topDistance: CGFloat {
-        max(0, -topInset - offset)
+    var startOffset: CGFloat {
+        isReversed ? upperOffset : lowerOffset
     }
 
-    var bottomOffset: CGFloat {
-        max(-topInset, contentHeight + bottomInset - viewportHeight)
+    var endOffset: CGFloat {
+        isReversed ? lowerOffset : upperOffset
     }
 
-    var bottomDistance: CGFloat {
-        max(0, offset - bottomOffset)
+    var startDistance: CGFloat {
+        max(0, -logicalOffset)
+    }
+
+    var endDistance: CGFloat {
+        max(0, logicalOffset - scrollableLength)
     }
 
     var remainingDistance: CGFloat {
-        bottomOffset - offset
+        scrollableLength - logicalOffset
     }
 
     var isShort: Bool {
-        contentHeight <= max(0, viewportHeight - topInset - bottomInset)
+        contentLength <= max(0, viewportLength - lowerInset - upperInset)
+    }
+
+    private var lowerOffset: CGFloat {
+        -lowerInset
+    }
+
+    private var upperOffset: CGFloat {
+        max(lowerOffset, contentLength + upperInset - viewportLength)
+    }
+
+    private var scrollableLength: CGFloat {
+        upperOffset - lowerOffset
+    }
+
+    private var logicalOffset: CGFloat {
+        isReversed ? upperOffset - offset : offset - lowerOffset
     }
 }
 

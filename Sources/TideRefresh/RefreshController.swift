@@ -314,9 +314,9 @@ public final class RefreshController: NSObject {
     @objc private func preferencesChanged() {
         guard attached else { return }
         layoutControls()
-        headerAnimator.update(state: headerState, progress: geometry.map { $0.topDistance / effectiveHeaderHeight } ?? 0)
+        headerAnimator.update(state: headerState, progress: geometry.map { $0.startDistance / effectiveHeaderHeight } ?? 0)
         guard attached else { return }
-        footerAnimator.update(state: footerState, progress: geometry.map { $0.bottomDistance / effectiveFooterHeight } ?? 0)
+        footerAnimator.update(state: footerState, progress: geometry.map { $0.endDistance / effectiveFooterHeight } ?? 0)
     }
 
     @objc private func retryFooter() {
@@ -358,8 +358,9 @@ public final class RefreshController: NSObject {
     private var geometry: ScrollGeometry? {
         guard let scrollView else { return nil }
         let inset = baseInsets
-        return ScrollGeometry(offset: scrollView.contentOffset.y, contentHeight: scrollView.contentSize.height,
-                              viewportHeight: scrollView.bounds.height, topInset: inset.top, bottomInset: inset.bottom)
+        return ScrollGeometry(offset: scrollView.contentOffset.y, contentLength: scrollView.contentSize.height,
+                              viewportLength: scrollView.bounds.height, lowerInset: inset.top,
+                              upperInset: inset.bottom, isReversed: false)
     }
 
     private func scrollChanged() {
@@ -367,14 +368,14 @@ public final class RefreshController: NSObject {
         layoutControls()
         // 分页时仍允许下拉手势；松开后刷新会取消旧分页。
         if !isRefreshing, scrollView.isDragging, onRefresh != nil {
-            let state = topPull.drag(distance: geometry.topDistance, threshold: effectiveHeaderHeight)
-            setState(state, edge: .top, progress: geometry.topDistance / effectiveHeaderHeight)
+            let state = topPull.drag(distance: geometry.startDistance, threshold: effectiveHeaderHeight)
+            setState(state, edge: .top, progress: geometry.startDistance / effectiveHeaderHeight)
         }
         guard operation == nil, hasMoreData, onLoadMore != nil, footerState != .failed else { return }
         if configuration.loadMoreMode == .pull {
             if scrollView.isDragging {
-                let state = bottomPull.drag(distance: geometry.bottomDistance, threshold: effectiveFooterHeight)
-                setState(state, edge: .bottom, progress: geometry.bottomDistance / effectiveFooterHeight)
+                let state = bottomPull.drag(distance: geometry.endDistance, threshold: effectiveFooterHeight)
+                setState(state, edge: .bottom, progress: geometry.endDistance / effectiveFooterHeight)
             }
             return
         }
@@ -533,6 +534,6 @@ public final class RefreshController: NSObject {
 
 private extension ScrollGeometry {
     var viewportHeightMinusInsets: CGFloat {
-        max(0, viewportHeight - topInset - bottomInset)
+        max(0, viewportLength - lowerInset - upperInset)
     }
 }

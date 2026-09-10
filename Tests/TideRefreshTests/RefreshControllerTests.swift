@@ -281,16 +281,41 @@ private final class TestAnimator: RefreshAnimator {
 
 final class ScrollGeometryTests: XCTestCase {
     func testSafeAreaIsExcludedFromPullDistance() {
-        let geometry = ScrollGeometry(offset: -148, contentHeight: 1000, viewportHeight: 800, topInset: 88, bottomInset: 34)
-        XCTAssertEqual(geometry.topDistance, 60)
-        XCTAssertEqual(geometry.bottomOffset, 234)
+        let geometry = ScrollGeometry(offset: -148, contentLength: 1000, viewportLength: 800,
+                                      lowerInset: 88, upperInset: 34, isReversed: false)
+        XCTAssertEqual(geometry.startDistance, 60)
+        XCTAssertEqual(geometry.endOffset, 234)
         XCTAssertFalse(geometry.isShort)
     }
 
-    func testShortContentBottomUsesRestingTop() {
-        let geometry = ScrollGeometry(offset: -44, contentHeight: 10, viewportHeight: 800, topInset: 88, bottomInset: 34)
-        XCTAssertEqual(geometry.bottomOffset, -88)
-        XCTAssertEqual(geometry.bottomDistance, 44)
+    func testShortContentEndUsesRestingStart() {
+        let geometry = ScrollGeometry(offset: -44, contentLength: 10, viewportLength: 800,
+                                      lowerInset: 88, upperInset: 34, isReversed: false)
+        XCTAssertEqual(geometry.endOffset, -88)
+        XCTAssertEqual(geometry.endDistance, 44)
+        XCTAssertTrue(geometry.isShort)
+    }
+
+    func testReversedHorizontalGeometryMapsPhysicalRightToLogicalStart() {
+        let start = ScrollGeometry(offset: 290, contentLength: 1000, viewportLength: 800,
+                                   lowerInset: 20, upperInset: 30, isReversed: true)
+        XCTAssertEqual(start.startDistance, 60)
+        XCTAssertEqual(start.endDistance, 0)
+        XCTAssertEqual(start.remainingDistance, 310)
+
+        let end = ScrollGeometry(offset: -64, contentLength: 1000, viewportLength: 800,
+                                 lowerInset: 20, upperInset: 30, isReversed: true)
+        XCTAssertEqual(end.startDistance, 0)
+        XCTAssertEqual(end.endDistance, 44)
+        XCTAssertEqual(end.remainingDistance, -44)
+    }
+
+    func testReversedShortContentUsesSingleRestingOffset() {
+        let geometry = ScrollGeometry(offset: -56, contentLength: 10, viewportLength: 800,
+                                      lowerInset: 12, upperInset: 18, isReversed: true)
+        XCTAssertEqual(geometry.startOffset, -12)
+        XCTAssertEqual(geometry.endOffset, -12)
+        XCTAssertEqual(geometry.endDistance, 44)
         XCTAssertTrue(geometry.isShort)
     }
 
