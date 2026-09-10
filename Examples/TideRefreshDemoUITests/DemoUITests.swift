@@ -264,10 +264,10 @@ final class DemoUITests: XCTestCase {
         drag(list, from: 0.18, to: 0.85)
         waitForStatus("Refreshes: 2", in: app)
 
-        for _ in 0 ..< 7 {
+        let trailingItem = forceRTL ? "item-0" : "item-19"
+        for _ in 0 ..< 7 where !list.cells[trailingItem].isHittable {
             list.swipeLeft(velocity: .fast)
         }
-        let trailingItem = forceRTL ? "item-0" : "item-19"
         XCTAssertTrue(list.cells[trailingItem].isHittable)
         drag(list, from: 0.82, to: 0.15)
         waitForStatus("Items: 40", in: app)
