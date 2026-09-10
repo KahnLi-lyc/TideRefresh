@@ -269,7 +269,7 @@ final class DemoUITests: XCTestCase {
             list.swipeLeft(velocity: .fast)
         }
         XCTAssertTrue(list.cells[trailingItem].isHittable)
-        drag(list, from: 0.82, to: 0.15)
+        drag(list, from: 0.95, to: 0.05)
         waitForStatus("Items: 40", in: app)
         capture(forceRTL ? "Horizontal RTL pagination" : "Horizontal LTR pagination", app: app)
     }
