@@ -77,6 +77,7 @@ public final class RefreshController: NSObject {
     private var fillScheduled = false
     private var isLayingOut = false
     private var isCancelling = false
+    private var keepsRefreshAtStart = false
     private var originalBounce = false
     private var originalAccessibilityActions: [UIAccessibilityCustomAction]?
     private var refreshAction: UIAccessibilityCustomAction?
@@ -193,6 +194,7 @@ public final class RefreshController: NSObject {
         fillGeneration = UUID()
         fillEnabled = false
         fillScheduled = false
+        keepsRefreshAtStart = false
         task?.cancel()
         task = nil
         refreshPull = PullStateMachine()
@@ -448,6 +450,7 @@ public final class RefreshController: NSObject {
 
     private func scrollChanged() {
         guard attached, !modifyingInsets, let scrollView, let geometry else { return }
+        if isRefreshing, scrollView.isDragging { keepsRefreshAtStart = false }
         layoutControls()
         // 分页时仍允许下拉手势；松开后刷新会取消旧分页。
         if !isRefreshing, scrollView.isDragging, onRefresh != nil {
@@ -515,6 +518,7 @@ public final class RefreshController: NSObject {
             setStartInset(effectiveHeaderHeight)
             guard attached, operationID == id else { return }
             scrollView.setContentOffset(startContentOffset(in: scrollView), animated: false)
+            keepsRefreshAtStart = axis == .horizontal
         }
         guard attached, operationID == id else { return }
         handler(operation)
@@ -544,7 +548,14 @@ public final class RefreshController: NSObject {
         operation = nil
         operationID = nil
         task = nil
-        if role == .refresh { setStartInset(0) }
+        if role == .refresh {
+            let shouldKeepAtStart = keepsRefreshAtStart
+            keepsRefreshAtStart = false
+            setStartInset(0)
+            if shouldKeepAtStart, let scrollView {
+                scrollView.setContentOffset(startContentOffset(in: scrollView), animated: false)
+            }
+        }
         guard attached, operation == nil, fillGeneration == generation else { return }
         switch result {
         case let .success(hasMore):

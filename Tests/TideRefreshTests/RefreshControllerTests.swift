@@ -325,6 +325,24 @@ final class RefreshControllerTests: XCTestCase {
         XCTAssertTrue(scroll.alwaysBounceVertical)
     }
 
+    func testHorizontalRTLProgrammaticRefreshStaysAtLeadingWhenContentGrows() throws {
+        let scroll = makeHorizontalScroll(direction: .rightToLeft)
+        scroll.contentSize.width = 0
+        var refresh: RefreshOperation?
+        let controller = try RefreshController(
+            scrollView: scroll,
+            axis: .horizontal,
+            onRefresh: { refresh = $0 }
+        )
+
+        controller.beginRefreshing()
+        scroll.contentSize.width = 1200
+        refresh?.finish()
+
+        XCTAssertEqual(scroll.contentOffset.x, 810)
+        controller.detach()
+    }
+
     func testHorizontalShortContentFillUsesContentWidth() async throws {
         let scroll = makeHorizontalScroll()
         scroll.contentSize.width = 10
