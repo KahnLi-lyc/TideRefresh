@@ -4,6 +4,7 @@ import TideRefresh
 enum DemoMode: String, CaseIterable {
     case table
     case collection
+    case horizontal
     case short
     case pull
     case prefetch
@@ -18,6 +19,7 @@ enum DemoMode: String, CaseIterable {
         switch self {
         case .table: "Table"
         case .collection: "Collection"
+        case .horizontal: "Horizontal Collection"
         case .short: "Short Content"
         case .pull: "Pull Footer"
         case .prefetch: "Prefetch Footer"
@@ -34,6 +36,7 @@ enum DemoMode: String, CaseIterable {
         switch self {
         case .table: "list.bullet.rectangle"
         case .collection: "square.grid.2x2"
+        case .horizontal: "rectangle.split.3x1"
         case .short: "rectangle.compress.vertical"
         case .pull: "arrow.up.to.line"
         case .prefetch: "arrow.down.forward.and.arrow.up.backward"
@@ -48,10 +51,26 @@ enum DemoMode: String, CaseIterable {
 
     var footerMode: LoadMoreMode {
         switch self {
-        case .pull: .pull
+        case .pull, .horizontal: .pull
         case .prefetch: .prefetch(distance: 240)
         default: .automatic
         }
+    }
+
+    var usesCollection: Bool {
+        self == .collection || self == .horizontal
+    }
+
+    var refreshAxis: RefreshAxis {
+        self == .horizontal ? .horizontal : .vertical
+    }
+
+    var refreshEdge: RefreshEdge {
+        self == .horizontal ? .leading : .top
+    }
+
+    var loadMoreEdge: RefreshEdge {
+        self == .horizontal ? .trailing : .bottom
     }
 }
 

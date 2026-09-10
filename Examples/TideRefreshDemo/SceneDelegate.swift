@@ -17,6 +17,7 @@ final class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let navigation = UINavigationController(rootViewController: DemoViewController())
         let arguments = ProcessInfo.processInfo.arguments
+        if arguments.contains("--force-rtl") { window.semanticContentAttribute = .forceRightToLeft }
         if arguments.contains("--dark-mode") { window.overrideUserInterfaceStyle = .dark }
         if let index = arguments.firstIndex(of: "--demo-mode"),
            arguments.indices.contains(index + 1),

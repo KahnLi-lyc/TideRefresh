@@ -133,6 +133,29 @@ final class DemoUITests: XCTestCase {
         XCUIDevice.shared.orientation = .portrait
     }
 
+    func testHorizontalPullRefreshAndPaginationLTR() {
+        exerciseHorizontalPulls(forceRTL: false)
+    }
+
+    func testHorizontalPullRefreshAndPaginationRTL() {
+        exerciseHorizontalPulls(forceRTL: true)
+    }
+
+    func testHorizontalResizePreservesDataAndDirection() {
+        let app = launch(mode: "horizontal")
+        let list = app.collectionViews["demo-list"]
+        XCTAssertTrue(list.waitForExistence(timeout: 5))
+        waitForStatus("Items: 20", in: app)
+
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertTrue(list.waitForExistence(timeout: 5))
+        XCTAssertTrue(app.staticTexts["demo-status"].label.contains("Items: 20"))
+        list.swipeLeft(velocity: .slow)
+        XCTAssertTrue(list.cells["item-1"].exists)
+        capture("Horizontal landscape resize", app: app)
+        XCUIDevice.shared.orientation = .portrait
+    }
+
     func testCancellationPreservesVisibleItems() {
         let app = XCUIApplication()
         app.launchArguments = ["--demo-mode", "table", "--hold-refresh"]
@@ -229,6 +252,32 @@ final class DemoUITests: XCTestCase {
         app.launchArguments = ["--demo-mode", mode] + extraArguments
         app.launch()
         return app
+    }
+
+    private func exerciseHorizontalPulls(forceRTL: Bool) {
+        let arguments = forceRTL ? ["--force-rtl"] : []
+        let app = launch(mode: "horizontal", extraArguments: arguments)
+        let list = app.collectionViews["demo-list"]
+        XCTAssertTrue(list.waitForExistence(timeout: 5))
+        waitForStatus("Items: 20", in: app)
+
+        drag(list, from: 0.18, to: 0.85)
+        waitForStatus("Refreshes: 2", in: app)
+
+        for _ in 0 ..< 7 {
+            list.swipeLeft(velocity: .fast)
+        }
+        let trailingItem = forceRTL ? "item-0" : "item-19"
+        XCTAssertTrue(list.cells[trailingItem].isHittable)
+        drag(list, from: 0.82, to: 0.15)
+        waitForStatus("Items: 40", in: app)
+        capture(forceRTL ? "Horizontal RTL pagination" : "Horizontal LTR pagination", app: app)
+    }
+
+    private func drag(_ element: XCUIElement, from startX: CGFloat, to endX: CGFloat) {
+        let start = element.coordinate(withNormalizedOffset: CGVector(dx: startX, dy: 0.5))
+        let end = element.coordinate(withNormalizedOffset: CGVector(dx: endX, dy: 0.5))
+        start.press(forDuration: 0.05, thenDragTo: end)
     }
 
     private func launchNetwork(

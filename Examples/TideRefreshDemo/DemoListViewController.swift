@@ -7,6 +7,7 @@ final class DemoListViewController: UIViewController {
 
     private let mode: DemoMode
     private let loader: DemoLoader
+    private let isForcedRTL: Bool
     private var items = [DemoItem]()
     private var refreshCount = 0
     private var pageCount = 0
@@ -70,14 +71,13 @@ final class DemoListViewController: UIViewController {
     }()
 
     private lazy var collectionView: UICollectionView = {
-        var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
-        configuration.showsSeparators = true
-        let layout = UICollectionViewCompositionalLayout.list(using: configuration)
+        let layout = makeCollectionLayout()
         let collection = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collection.translatesAutoresizingMaskIntoConstraints = false
         collection.backgroundColor = .systemGroupedBackground
         collection.delegate = self
         collection.accessibilityIdentifier = "demo-list"
+        if isForcedRTL { collection.semanticContentAttribute = .forceRightToLeft }
         return collection
     }()
 
@@ -86,6 +86,7 @@ final class DemoListViewController: UIViewController {
     init(mode: DemoMode) {
         self.mode = mode
         let arguments = ProcessInfo.processInfo.arguments
+        isForcedRTL = arguments.contains("--force-rtl")
         loader = DemoLoader(pageSize: mode == .short ? 3 : 20,
                             holdsSubsequentRefreshes: arguments.contains("--hold-refresh"))
         super.init(nibName: nil, bundle: nil)
@@ -127,7 +128,7 @@ final class DemoListViewController: UIViewController {
 
     private func setUpViews() {
         view.addSubview(controlsView)
-        let scrollView: UIScrollView = mode == .collection ? collectionView : tableView
+        let scrollView: UIScrollView = mode.usesCollection ? collectionView : tableView
         view.addSubview(scrollView)
         NSLayoutConstraint.activate([
             controlsView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
@@ -147,11 +148,35 @@ final class DemoListViewController: UIViewController {
             UIBarButtonItem(systemItem: .flexibleSpace),
             action("arrow.down.to.line", label: "Load more", id: "load-more-button", selector: #selector(loadMore)),
         ]
-        if mode == .collection { setUpCollection() }
+        if mode.usesCollection { setUpCollection() }
+    }
+
+    private func makeCollectionLayout() -> UICollectionViewLayout {
+        guard mode == .horizontal else {
+            var configuration = UICollectionLayoutListConfiguration(appearance: .insetGrouped)
+            configuration.showsSeparators = true
+            return UICollectionViewCompositionalLayout.list(using: configuration)
+        }
+        let itemSize = NSCollectionLayoutSize(
+            widthDimension: .fractionalWidth(1),
+            heightDimension: .fractionalHeight(1)
+        )
+        let item = NSCollectionLayoutItem(layoutSize: itemSize)
+        let groupSize = NSCollectionLayoutSize(
+            widthDimension: .absolute(260),
+            heightDimension: .absolute(180)
+        )
+        let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        let section = NSCollectionLayoutSection(group: group)
+        section.interGroupSpacing = 12
+        section.contentInsets = .init(top: 16, leading: 20, bottom: 16, trailing: 20)
+        let configuration = UICollectionViewCompositionalLayoutConfiguration()
+        configuration.scrollDirection = .horizontal
+        return UICollectionViewCompositionalLayout(section: section, configuration: configuration)
     }
 
     private func setUpCollection() {
-        let registration = UICollectionView.CellRegistration<UICollectionViewListCell, DemoItem> { cell, _, item in
+        let registration = UICollectionView.CellRegistration<UICollectionViewListCell, DemoItem> { [weak self] cell, _, item in
             var content = UIListContentConfiguration.subtitleCell()
             content.text = item.title
             content.secondaryText = item.subtitle
@@ -160,6 +185,9 @@ final class DemoListViewController: UIViewController {
             content.imageProperties.tintColor = .systemTeal
             cell.contentConfiguration = content
             cell.accessories = [.disclosureIndicator()]
+            if self?.mode == .horizontal {
+                cell.backgroundConfiguration = .listGroupedCell()
+            }
             cell.accessibilityIdentifier = "item-\(item.id)"
         }
         collectionDataSource = UICollectionViewDiffableDataSource<Int, Int>(collectionView: collectionView) {
@@ -171,12 +199,13 @@ final class DemoListViewController: UIViewController {
 
     private func attachRefresh() {
         do {
-            let scrollView: UIScrollView = mode == .collection ? collectionView : tableView
+            let scrollView: UIScrollView = mode.usesCollection ? collectionView : tableView
             let controller = try RefreshController(
                 scrollView: scrollView,
+                axis: mode.refreshAxis,
                 configuration: .init(loadMoreMode: mode.footerMode),
-                headerAnimator: makeAnimator(edge: .top),
-                footerAnimator: makeAnimator(edge: .bottom)
+                headerAnimator: makeAnimator(edge: mode.refreshEdge),
+                footerAnimator: makeAnimator(edge: mode.loadMoreEdge)
             )
             controller.setAsyncHandlers(
                 refresh: { [weak self] in
@@ -270,7 +299,7 @@ final class DemoListViewController: UIViewController {
             items += values
             pageCount += 1
         }
-        if mode == .collection {
+        if mode.usesCollection {
             var snapshot = NSDiffableDataSourceSnapshot<Int, Int>()
             snapshot.appendSections([0])
             snapshot.appendItems(items.map(\.id))
@@ -319,7 +348,7 @@ final class DemoListViewController: UIViewController {
             DotsRefreshAnimator(edge: edge)
         case .tide:
             TideRefreshAnimator(edge: edge)
-        case .table, .collection, .short, .pull, .prefetch, .network:
+        case .table, .collection, .horizontal, .short, .pull, .prefetch, .network:
             nil
         }
     }
