@@ -57,6 +57,71 @@ final class RefreshAnimatorTests: XCTestCase {
         XCTAssertEqual(animator.view.accessibilityLabel, "Loading accessibly")
     }
 
+    func testExpressiveAnimatorsMapPullProgressWithoutVisibleText() {
+        let animators: [any RefreshAnimator] = [
+            RingRefreshAnimator(edge: .top),
+            DotsRefreshAnimator(edge: .top),
+            TideRefreshAnimator(edge: .top),
+        ]
+
+        for animator in animators {
+            animator.view.frame = CGRect(x: 0, y: 0, width: 160, height: 60)
+            animator.view.layoutIfNeeded()
+            animator.update(state: .pulling, progress: 0.4)
+
+            XCTAssertEqual(animator.view.subviews.first?.alpha ?? 0, 0.4, accuracy: 0.001)
+            XCTAssertTrue(findSubviews(UILabel.self, in: animator.view).isEmpty)
+            XCTAssertEqual(animator.view.accessibilityLabel, RefreshStrings().pullToRefresh)
+        }
+    }
+
+    func testExpressiveAnimatorsStartAndStopOwnedLoadingAnimations() {
+        let animators: [any RefreshAnimator] = [
+            RingRefreshAnimator(edge: .bottom),
+            DotsRefreshAnimator(edge: .bottom),
+            TideRefreshAnimator(edge: .bottom),
+        ]
+
+        for animator in animators {
+            animator.view.frame = CGRect(x: 0, y: 0, width: 160, height: 60)
+            animator.view.layoutIfNeeded()
+            animator.update(state: .loading, progress: .nan)
+
+            if !UIAccessibility.isReduceMotionEnabled {
+                XCTAssertGreaterThan(animationCount(in: animator.view.layer), 0)
+            }
+            XCTAssertEqual(animator.view.accessibilityLabel, RefreshStrings().loadingMore)
+
+            animator.stop()
+            animator.stop()
+            XCTAssertEqual(animationCount(in: animator.view.layer), 0)
+        }
+    }
+
+    func testExpressiveAnimatorsClampInvalidProgressAndShowTerminalSymbols() {
+        let animators: [any RefreshAnimator] = [
+            RingRefreshAnimator(edge: .bottom),
+            DotsRefreshAnimator(edge: .bottom),
+            TideRefreshAnimator(edge: .bottom),
+        ]
+
+        for animator in animators {
+            animator.update(state: .pulling, progress: .infinity)
+            XCTAssertEqual(animator.view.subviews.first?.alpha, 0)
+
+            animator.update(state: .armed, progress: 20)
+            XCTAssertEqual(animator.view.subviews.first?.alpha, 1)
+
+            animator.update(state: .failed, progress: 0)
+            XCTAssertTrue(hasVisibleTerminalImage(in: animator.view))
+            XCTAssertEqual(animator.view.accessibilityLabel, RefreshStrings().retry)
+
+            animator.update(state: .noMoreData, progress: 0)
+            XCTAssertTrue(hasVisibleTerminalImage(in: animator.view))
+            XCTAssertEqual(animator.view.accessibilityLabel, RefreshStrings().noMoreData)
+        }
+    }
+
     private func hasVisibleTerminalImage(in view: UIView) -> Bool {
         findSubviews(UIImageView.self, in: view).contains {
             !$0.isHidden && $0.alpha > 0 && !hasActivityIndicatorAncestor($0)
@@ -70,6 +135,12 @@ final class RefreshAnimatorTests: XCTestCase {
             ancestor = current.superview
         }
         return false
+    }
+
+    private func animationCount(in layer: CALayer) -> Int {
+        (layer.animationKeys()?.count ?? 0) + (layer.sublayers ?? []).reduce(0) {
+            $0 + animationCount(in: $1)
+        }
     }
 
     private func findSubview<View: UIView>(_ type: View.Type, in view: UIView) -> View? {
