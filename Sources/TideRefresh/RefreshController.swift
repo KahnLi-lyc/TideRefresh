@@ -1,12 +1,17 @@
 import UIKit
 
+private enum RefreshRole: Equatable {
+    case refresh
+    case loadMore
+}
+
 /// Attachment fails when another controller already owns the scroll view.
 public enum RefreshAttachmentError: Error {
     case alreadyAttached
     case sharedAnimatorView
 }
 
-/// Attaches vertical refresh controls without replacing the host scroll delegate.
+/// Attaches refresh controls without replacing the host scroll delegate.
 ///
 /// The scroll view retains its controller. Keep callbacks weak with respect to their
 /// owner. Call `detach()` to remove controls, or `cancel()` when leaving a page.
@@ -21,11 +26,11 @@ public final class RefreshController: NSObject {
     public private(set) var footerState: RefreshState = .idle
     public private(set) var hasMoreData = true
     public var isRefreshing: Bool {
-        operation?.edge == .top
+        operation?.edge == refreshEdge
     }
 
     public var isLoadingMore: Bool {
-        operation?.edge == .bottom
+        operation?.edge == loadMoreEdge
     }
 
     public var isAttached: Bool {
@@ -44,6 +49,8 @@ public final class RefreshController: NSObject {
     // MARK: - Private Properties
 
     private static var associationKey: UInt8 = 0
+    private let axis: RefreshAxis
+    private let layoutDirection: UIUserInterfaceLayoutDirection
     private let configuration: RefreshConfiguration
     private let headerAnimator: any RefreshAnimator
     private let footerAnimator: any RefreshAnimator
@@ -57,10 +64,10 @@ public final class RefreshController: NSObject {
     }
 
     private var operationID: UUID?
-    private var topPull = PullStateMachine()
-    private var bottomPull = PullStateMachine()
-    private var ownedTop: CGFloat = 0
-    private var ownedBottom: CGFloat = 0
+    private var refreshPull = PullStateMachine()
+    private var loadMorePull = PullStateMachine()
+    private var ownedStart: CGFloat = 0
+    private var ownedEnd: CGFloat = 0
     private var modifyingInsets = false
     private var attached = false
     private var automaticArmed = true
@@ -83,8 +90,12 @@ public final class RefreshController: NSObject {
     // MARK: - Initialization
 
     /// Attaches one controller. Custom animators must each supply a distinct, unparented view.
+    ///
+    /// Horizontal attachment resolves leading and trailing from the scroll view's effective
+    /// layout direction at initialization. Detach and reattach after changing that direction.
     public init(
         scrollView: UIScrollView,
+        axis: RefreshAxis = .vertical,
         configuration: RefreshConfiguration = .init(),
         headerAnimator: (any RefreshAnimator)? = nil,
         footerAnimator: (any RefreshAnimator)? = nil,
@@ -96,12 +107,28 @@ public final class RefreshController: NSObject {
         guard objc_getAssociatedObject(scrollView, &Self.associationKey) == nil else {
             throw RefreshAttachmentError.alreadyAttached
         }
-        let header = headerAnimator ?? DefaultRefreshAnimator(edge: .top)
-        let footer = footerAnimator ?? DefaultRefreshAnimator(edge: .bottom)
+        let refreshEdge: RefreshEdge = axis == .vertical ? .top : .leading
+        let loadMoreEdge: RefreshEdge = axis == .vertical ? .bottom : .trailing
+        let header: any RefreshAnimator = if let headerAnimator {
+            headerAnimator
+        } else if axis == .horizontal {
+            RingRefreshAnimator(edge: refreshEdge)
+        } else {
+            DefaultRefreshAnimator(edge: refreshEdge)
+        }
+        let footer: any RefreshAnimator = if let footerAnimator {
+            footerAnimator
+        } else if axis == .horizontal {
+            RingRefreshAnimator(edge: loadMoreEdge)
+        } else {
+            DefaultRefreshAnimator(edge: loadMoreEdge)
+        }
         guard header.view !== footer.view, header.view.superview == nil, footer.view.superview == nil else {
             throw RefreshAttachmentError.sharedAnimatorView
         }
         self.scrollView = scrollView
+        self.axis = axis
+        layoutDirection = scrollView.effectiveUserInterfaceLayoutDirection
         self.configuration = configuration
         self.headerAnimator = header
         self.footerAnimator = footer
@@ -109,8 +136,12 @@ public final class RefreshController: NSObject {
         self.onRefresh = onRefresh
         self.onLoadMore = onLoadMore
         super.init()
-        originalBounce = scrollView.alwaysBounceVertical
-        scrollView.alwaysBounceVertical = true
+        originalBounce = axis == .vertical ? scrollView.alwaysBounceVertical : scrollView.alwaysBounceHorizontal
+        if axis == .vertical {
+            scrollView.alwaysBounceVertical = true
+        } else {
+            scrollView.alwaysBounceHorizontal = true
+        }
         attached = true
         objc_setAssociatedObject(scrollView, &Self.associationKey, self, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
         configure(theme: theme, strings: strings)
@@ -144,12 +175,12 @@ public final class RefreshController: NSObject {
 
     /// Starts refresh and cancels pagination. A refresh already in progress is not duplicated.
     public func beginRefreshing() {
-        begin(.top)
+        begin(.refresh)
     }
 
     /// Starts a page request if attached, idle, and more data is available.
     public func beginLoadingMore() {
-        begin(.bottom)
+        begin(.loadMore)
     }
 
     /// Cancels the current operation without displaying an error or changing pagination availability.
@@ -164,11 +195,11 @@ public final class RefreshController: NSObject {
         fillScheduled = false
         task?.cancel()
         task = nil
-        topPull = PullStateMachine()
-        bottomPull = PullStateMachine()
-        setTopInset(0)
-        setState(.idle, edge: .top)
-        setState(hasMoreData ? .idle : .noMoreData, edge: .bottom)
+        refreshPull = PullStateMachine()
+        loadMorePull = PullStateMachine()
+        setStartInset(0)
+        setState(.idle, role: .refresh)
+        setState(hasMoreData ? .idle : .noMoreData, role: .loadMore)
         isCancelling = false
         // 先清理本次状态，再通知业务；取消回调可能同步发起新操作。
         previous?.invalidate()
@@ -181,7 +212,7 @@ public final class RefreshController: NSObject {
         fillScheduled = false
         shortContentPages = 0
         automaticArmed = true
-        if !isLoadingMore { setState(hasMoreData ? .idle : .noMoreData, edge: .bottom) }
+        if !isLoadingMore { setState(hasMoreData ? .idle : .noMoreData, role: .loadMore) }
         scheduleShortContentFill()
     }
 
@@ -204,12 +235,16 @@ public final class RefreshController: NSObject {
         NotificationCenter.default.removeObserver(self)
         scrollView.panGestureRecognizer.removeTarget(self, action: #selector(panChanged))
         cancel()
-        setBottomInset(0)
+        setEndInset(0)
         headerAnimator.stop()
         footerAnimator.stop()
         headerView.removeFromSuperview()
         footerView.removeFromSuperview()
-        scrollView.alwaysBounceVertical = originalBounce
+        if axis == .vertical {
+            scrollView.alwaysBounceVertical = originalBounce
+        } else {
+            scrollView.alwaysBounceHorizontal = originalBounce
+        }
         // 保留业务在挂载之后新增的辅助功能操作。
         scrollView.accessibilityCustomActions = scrollView.accessibilityCustomActions?.filter {
             $0 !== refreshAction && $0 !== loadAction
@@ -241,15 +276,34 @@ public final class RefreshController: NSObject {
         isLayingOut = true
         defer { isLayingOut = false }
         let inset = baseInsets
-        let width = max(0, scrollView.bounds.width - inset.left - inset.right)
-        let headerHeight = effectiveHeaderHeight
-        let footerHeight = effectiveFooterHeight
-        headerView.frame = CGRect(x: inset.left, y: -headerHeight, width: width, height: headerHeight)
-        footerView.frame = CGRect(x: inset.left, y: max(scrollView.contentSize.height, geometry?.viewportHeightMinusInsets ?? 0), width: width, height: footerHeight)
+        let headerExtent = effectiveHeaderHeight
+        let footerExtent = effectiveFooterHeight
+        if axis == .vertical {
+            let width = max(0, scrollView.bounds.width - inset.left - inset.right)
+            headerView.frame = CGRect(x: inset.left, y: -headerExtent, width: width, height: headerExtent)
+            footerView.frame = CGRect(
+                x: inset.left,
+                y: max(scrollView.contentSize.height, geometry?.viewportLengthMinusInsets ?? 0),
+                width: width,
+                height: footerExtent
+            )
+        } else {
+            let height = max(0, scrollView.bounds.height - inset.top - inset.bottom)
+            let contentEnd = max(scrollView.contentSize.width, geometry?.viewportLengthMinusInsets ?? 0)
+            let lowerFrame = CGRect(x: -footerExtent, y: inset.top, width: footerExtent, height: height)
+            let upperFrame = CGRect(x: contentEnd, y: inset.top, width: headerExtent, height: height)
+            if isReversed {
+                headerView.frame = upperFrame
+                footerView.frame = lowerFrame
+            } else {
+                headerView.frame = CGRect(x: -headerExtent, y: inset.top, width: headerExtent, height: height)
+                footerView.frame = CGRect(x: contentEnd, y: inset.top, width: footerExtent, height: height)
+            }
+        }
         footerView.isHidden = onLoadMore == nil
         headerView.isHidden = onRefresh == nil
-        if ownedTop > 0, ownedTop != headerHeight { setTopInset(headerHeight) }
-        if onLoadMore != nil, ownedBottom != footerHeight { setBottomInset(footerHeight) }
+        if ownedStart > 0, ownedStart != headerExtent { setStartInset(headerExtent) }
+        if onLoadMore != nil, ownedEnd != footerExtent { setEndInset(footerExtent) }
     }
 
     private var effectiveHeaderHeight: CGFloat {
@@ -314,9 +368,15 @@ public final class RefreshController: NSObject {
     @objc private func preferencesChanged() {
         guard attached else { return }
         layoutControls()
-        headerAnimator.update(state: headerState, progress: geometry.map { $0.startDistance / effectiveHeaderHeight } ?? 0)
+        headerAnimator.update(
+            state: headerState,
+            progress: geometry.map { $0.startDistance / effectiveHeaderHeight } ?? 0
+        )
         guard attached else { return }
-        footerAnimator.update(state: footerState, progress: geometry.map { $0.endDistance / effectiveFooterHeight } ?? 0)
+        footerAnimator.update(
+            state: footerState,
+            progress: geometry.map { $0.endDistance / effectiveFooterHeight } ?? 0
+        )
     }
 
     @objc private func retryFooter() {
@@ -333,13 +393,13 @@ public final class RefreshController: NSObject {
             scrollChanged()
         case .ended, .cancelled, .failed:
             let cancelled = scrollView.panGestureRecognizer.state != .ended
-            let top = topPull.release(cancelled: cancelled)
-            let bottom = bottomPull.release(cancelled: cancelled)
-            if top { beginRefreshing() }
-            else if bottom { beginLoadingMore() }
+            let refresh = refreshPull.release(cancelled: cancelled)
+            let loadMore = loadMorePull.release(cancelled: cancelled)
+            if refresh { beginRefreshing() }
+            else if loadMore { beginLoadingMore() }
             else if operation == nil {
-                if headerState == .armed || headerState == .pulling { setState(.idle, edge: .top) }
-                if footerState == .armed || footerState == .pulling { setState(.idle, edge: .bottom) }
+                if headerState == .armed || headerState == .pulling { setState(.idle, role: .refresh) }
+                if footerState == .armed || footerState == .pulling { setState(.idle, role: .loadMore) }
             }
         default: break
         }
@@ -350,17 +410,40 @@ public final class RefreshController: NSObject {
     private var baseInsets: UIEdgeInsets {
         guard let scrollView else { return .zero }
         var inset = scrollView.adjustedContentInset
-        inset.top -= ownedTop
-        inset.bottom -= ownedBottom
+        if axis == .vertical {
+            inset.top -= ownedStart
+            inset.bottom -= ownedEnd
+        } else if isReversed {
+            inset.right -= ownedStart
+            inset.left -= ownedEnd
+        } else {
+            inset.left -= ownedStart
+            inset.right -= ownedEnd
+        }
         return inset
     }
 
     private var geometry: ScrollGeometry? {
         guard let scrollView else { return nil }
         let inset = baseInsets
-        return ScrollGeometry(offset: scrollView.contentOffset.y, contentLength: scrollView.contentSize.height,
-                              viewportLength: scrollView.bounds.height, lowerInset: inset.top,
-                              upperInset: inset.bottom, isReversed: false)
+        if axis == .vertical {
+            return ScrollGeometry(
+                offset: scrollView.contentOffset.y,
+                contentLength: scrollView.contentSize.height,
+                viewportLength: scrollView.bounds.height,
+                lowerInset: inset.top,
+                upperInset: inset.bottom,
+                isReversed: false
+            )
+        }
+        return ScrollGeometry(
+            offset: scrollView.contentOffset.x,
+            contentLength: scrollView.contentSize.width,
+            viewportLength: scrollView.bounds.width,
+            lowerInset: inset.left,
+            upperInset: inset.right,
+            isReversed: isReversed
+        )
     }
 
     private func scrollChanged() {
@@ -368,14 +451,14 @@ public final class RefreshController: NSObject {
         layoutControls()
         // 分页时仍允许下拉手势；松开后刷新会取消旧分页。
         if !isRefreshing, scrollView.isDragging, onRefresh != nil {
-            let state = topPull.drag(distance: geometry.startDistance, threshold: effectiveHeaderHeight)
-            setState(state, edge: .top, progress: geometry.startDistance / effectiveHeaderHeight)
+            let state = refreshPull.drag(distance: geometry.startDistance, threshold: effectiveHeaderHeight)
+            setState(state, role: .refresh, progress: geometry.startDistance / effectiveHeaderHeight)
         }
         guard operation == nil, hasMoreData, onLoadMore != nil, footerState != .failed else { return }
         if configuration.loadMoreMode == .pull {
             if scrollView.isDragging {
-                let state = bottomPull.drag(distance: geometry.endDistance, threshold: effectiveFooterHeight)
-                setState(state, edge: .bottom, progress: geometry.endDistance / effectiveFooterHeight)
+                let state = loadMorePull.drag(distance: geometry.endDistance, threshold: effectiveFooterHeight)
+                setState(state, role: .loadMore, progress: geometry.endDistance / effectiveFooterHeight)
             }
             return
         }
@@ -392,11 +475,23 @@ public final class RefreshController: NSObject {
         }
     }
 
-    private func begin(_ edge: RefreshEdge) {
+    private var isReversed: Bool {
+        axis == .horizontal && layoutDirection == .rightToLeft
+    }
+
+    private var refreshEdge: RefreshEdge {
+        axis == .vertical ? .top : .leading
+    }
+
+    private var loadMoreEdge: RefreshEdge {
+        axis == .vertical ? .bottom : .trailing
+    }
+
+    private func begin(_ role: RefreshRole) {
         guard attached, !isCancelling else { return }
-        let handler = edge == .top ? onRefresh : onLoadMore
+        let handler = role == .refresh ? onRefresh : onLoadMore
         guard let handler else { return }
-        if edge == .top {
+        if role == .refresh {
             guard !isRefreshing else { return }
             cancel()
             // 取消回调可能卸载组件或启动其他操作。
@@ -409,14 +504,17 @@ public final class RefreshController: NSObject {
         fillGeneration = UUID()
         fillScheduled = false
         operationID = id
-        let operation = RefreshOperation(edge: edge) { [weak self] result in self?.finish(id: id, edge: edge, result: result) }
+        let edge = role == .refresh ? refreshEdge : loadMoreEdge
+        let operation = RefreshOperation(edge: edge) { [weak self] result in
+            self?.finish(id: id, role: role, result: result)
+        }
         self.operation = operation
-        setState(.loading, edge: edge)
+        setState(.loading, role: role)
         guard attached, operationID == id else { return }
-        if edge == .top, let scrollView {
-            setTopInset(effectiveHeaderHeight)
+        if role == .refresh, let scrollView {
+            setStartInset(effectiveHeaderHeight)
             guard attached, operationID == id else { return }
-            scrollView.setContentOffset(CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top), animated: false)
+            scrollView.setContentOffset(startContentOffset(in: scrollView), animated: false)
         }
         guard attached, operationID == id else { return }
         handler(operation)
@@ -440,31 +538,31 @@ public final class RefreshController: NSObject {
         }
     }
 
-    private func finish(id: UUID, edge: RefreshEdge, result: RefreshResult) {
+    private func finish(id: UUID, role: RefreshRole, result: RefreshResult) {
         guard attached, operationID == id else { return }
         let generation = fillGeneration
         operation = nil
         operationID = nil
         task = nil
-        if edge == .top { setTopInset(0) }
+        if role == .refresh { setStartInset(0) }
         guard attached, operation == nil, fillGeneration == generation else { return }
         switch result {
         case let .success(hasMore):
             hasMoreData = hasMore
-            if edge == .top {
+            if role == .refresh {
                 (headerAnimator as? DefaultRefreshAnimator)?.lastUpdated = Date()
-                setState(.succeeded, edge: .top)
+                setState(.succeeded, role: .refresh)
             }
             guard attached, operation == nil, fillGeneration == generation else { return }
-            setState(hasMore ? .idle : .noMoreData, edge: .bottom)
+            setState(hasMore ? .idle : .noMoreData, role: .loadMore)
             guard attached, operation == nil, fillGeneration == generation else { return }
             fillEnabled = true
             scheduleShortContentFill()
         case .failure:
             fillEnabled = false
-            setState(.failed, edge: edge)
+            setState(.failed, role: role)
         case .cancelled:
-            setState(.idle, edge: edge)
+            setState(.idle, role: role)
         }
     }
 
@@ -485,55 +583,99 @@ public final class RefreshController: NSObject {
         }
     }
 
-    private func setState(_ state: RefreshState, edge: RefreshEdge, progress: CGFloat = 0) {
-        let old = edge == .top ? headerState : footerState
-        if edge == .top { headerState = state; headerAnimator.update(state: state, progress: progress) }
-        else {
+    private func setState(_ state: RefreshState, role: RefreshRole, progress: CGFloat = 0) {
+        let old = role == .refresh ? headerState : footerState
+        if role == .refresh {
+            headerState = state
+            headerAnimator.update(state: state, progress: progress)
+        } else {
             footerState = state
             footerAnimator.update(state: state, progress: progress)
             guard attached else { return }
-            footerView.accessibilityLabel = state.accessibilityLabel(edge: .bottom, strings: strings)
+            footerView.accessibilityLabel = state.accessibilityLabel(edge: loadMoreEdge, strings: strings)
         }
         guard attached else { return }
         if state == .armed, old != .armed, configuration.isHapticsEnabled {
             UISelectionFeedbackGenerator().selectionChanged()
         }
         if state != old, [.loading, .failed, .noMoreData, .succeeded].contains(state) {
-            let message = state == .failed ? strings.retry : state == .noMoreData ? strings.noMoreData : state == .succeeded ? strings.updated : edge == .top ? strings.refreshing : strings.loadingMore
+            let message = state == .failed ? strings.retry : state == .noMoreData ? strings.noMoreData : state == .succeeded ? strings.updated : role == .refresh ? strings.refreshing : strings.loadingMore
             UIAccessibility.post(notification: .announcement, argument: message)
         }
     }
 
     private func updateFooterInset() {
-        setBottomInset(onLoadMore == nil ? 0 : effectiveFooterHeight)
+        setEndInset(onLoadMore == nil ? 0 : effectiveFooterHeight)
     }
 
-    private func setTopInset(_ value: CGFloat) {
+    private func setStartInset(_ value: CGFloat) {
         guard let scrollView else { return }
-        let delta = value - ownedTop
+        let delta = value - ownedStart
         guard abs(delta) > 0.001 else { return }
         modifyingInsets = true
-        ownedTop = value
-        scrollView.contentInset.top += delta
-        if value == 0, !scrollView.isDragging, scrollView.contentOffset.y < -scrollView.adjustedContentInset.top {
-            scrollView.contentOffset.y = -scrollView.adjustedContentInset.top
+        ownedStart = value
+        if axis == .vertical {
+            scrollView.contentInset.top += delta
+        } else if isReversed {
+            scrollView.contentInset.right += delta
+        } else {
+            scrollView.contentInset.left += delta
+        }
+        if value == 0, !scrollView.isDragging, let geometry {
+            if !isReversed, axisOffset(in: scrollView) < geometry.startOffset {
+                setAxisOffset(geometry.startOffset, in: scrollView)
+            } else if isReversed, axisOffset(in: scrollView) > geometry.startOffset {
+                setAxisOffset(geometry.startOffset, in: scrollView)
+            }
         }
         modifyingInsets = false
     }
 
-    private func setBottomInset(_ value: CGFloat) {
+    private func setEndInset(_ value: CGFloat) {
         guard let scrollView else { return }
-        let delta = value - ownedBottom
+        let delta = value - ownedEnd
         guard abs(delta) > 0.001 else { return }
         modifyingInsets = true
-        ownedBottom = value
-        scrollView.contentInset.bottom += delta
+        ownedEnd = value
+        if axis == .vertical {
+            scrollView.contentInset.bottom += delta
+        } else if isReversed {
+            scrollView.contentInset.left += delta
+        } else {
+            scrollView.contentInset.right += delta
+        }
         modifyingInsets = false
+    }
+
+    private func startContentOffset(in scrollView: UIScrollView) -> CGPoint {
+        if axis == .vertical {
+            return CGPoint(x: scrollView.contentOffset.x, y: -scrollView.adjustedContentInset.top)
+        }
+        if isReversed {
+            let x = max(
+                -scrollView.adjustedContentInset.left,
+                scrollView.contentSize.width + scrollView.adjustedContentInset.right - scrollView.bounds.width
+            )
+            return CGPoint(x: x, y: scrollView.contentOffset.y)
+        }
+        return CGPoint(x: -scrollView.adjustedContentInset.left, y: scrollView.contentOffset.y)
+    }
+
+    private func axisOffset(in scrollView: UIScrollView) -> CGFloat {
+        axis == .vertical ? scrollView.contentOffset.y : scrollView.contentOffset.x
+    }
+
+    private func setAxisOffset(_ value: CGFloat, in scrollView: UIScrollView) {
+        if axis == .vertical {
+            scrollView.contentOffset.y = value
+        } else {
+            scrollView.contentOffset.x = value
+        }
     }
 }
 
 private extension ScrollGeometry {
-    var viewportHeightMinusInsets: CGFloat {
+    var viewportLengthMinusInsets: CGFloat {
         max(0, viewportLength - lowerInset - upperInset)
     }
 }

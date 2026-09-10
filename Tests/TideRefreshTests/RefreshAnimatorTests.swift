@@ -122,6 +122,41 @@ final class RefreshAnimatorTests: XCTestCase {
         }
     }
 
+    func testHorizontalEdgesUseRefreshAndLoadMoreAccessibilitySemantics() {
+        let strings = RefreshStrings(
+            pullToRefresh: "Pull leading",
+            refreshing: "Refresh leading",
+            loadMore: "Pull trailing",
+            loadingMore: "Load trailing"
+        )
+        let leading = RingRefreshAnimator(edge: .leading)
+        let trailing = RingRefreshAnimator(edge: .trailing)
+        leading.configure(theme: .init(), strings: strings)
+        trailing.configure(theme: .init(), strings: strings)
+
+        leading.update(state: .pulling, progress: 0.5)
+        trailing.update(state: .pulling, progress: 0.5)
+        XCTAssertEqual(leading.view.accessibilityLabel, "Pull leading")
+        XCTAssertEqual(trailing.view.accessibilityLabel, "Pull trailing")
+
+        leading.update(state: .loading, progress: 0)
+        trailing.update(state: .loading, progress: 0)
+        XCTAssertEqual(leading.view.accessibilityLabel, "Refresh leading")
+        XCTAssertEqual(trailing.view.accessibilityLabel, "Load trailing")
+    }
+
+    func testDefaultAnimatorTreatsLeadingAsRefreshAndUsesHorizontalLayout() {
+        let strings = RefreshStrings(pullToRefresh: "Pull", loadMore: "Load", updated: "Updated")
+        let animator = DefaultRefreshAnimator(edge: .leading)
+        animator.lastUpdated = Date(timeIntervalSince1970: 0)
+        animator.configure(theme: .init(), strings: strings)
+        animator.update(state: .idle, progress: 0)
+
+        XCTAssertEqual(findSubview(UIStackView.self, in: animator.view)?.axis, .vertical)
+        XCTAssertTrue(findSubview(UILabel.self, in: animator.view)?.text?.contains("Pull") == true)
+        XCTAssertTrue(findSubview(UILabel.self, in: animator.view)?.text?.contains(":") == true)
+    }
+
     private func hasVisibleTerminalImage(in view: UIView) -> Bool {
         findSubviews(UIImageView.self, in: view).contains {
             !$0.isHidden && $0.alpha > 0 && !hasActivityIndicatorAncestor($0)

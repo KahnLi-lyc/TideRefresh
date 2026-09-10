@@ -86,11 +86,11 @@ extension RefreshState {
     func accessibilityLabel(edge: RefreshEdge, strings: RefreshStrings) -> String {
         switch self {
         case .idle, .pulling:
-            edge == .top ? strings.pullToRefresh : strings.loadMore
+            edge.isRefresh ? strings.pullToRefresh : strings.loadMore
         case .armed:
             strings.releaseToRefresh
         case .loading:
-            edge == .top ? strings.refreshing : strings.loadingMore
+            edge.isRefresh ? strings.refreshing : strings.loadingMore
         case .succeeded:
             strings.updated
         case .failed:
@@ -109,6 +109,16 @@ extension RefreshState {
         case .idle, .succeeded, .failed, .noMoreData:
             0
         }
+    }
+}
+
+extension RefreshEdge {
+    var isRefresh: Bool {
+        self == .top || self == .leading
+    }
+
+    var isHorizontal: Bool {
+        self == .leading || self == .trailing
     }
 }
 

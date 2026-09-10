@@ -65,7 +65,7 @@ public final class DefaultRefreshAnimator: RefreshAnimator {
 
     private lazy var stackView: UIStackView = {
         let stack = UIStackView(arrangedSubviews: [arrowView, spinner, statusLabel])
-        stack.axis = .horizontal
+        stack.axis = edge.isHorizontal ? .vertical : .horizontal
         stack.alignment = .center
         stack.spacing = 8
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -73,7 +73,7 @@ public final class DefaultRefreshAnimator: RefreshAnimator {
     }()
 
     private lazy var arrowView: UIImageView = {
-        let image = UIImageView(image: UIImage(systemName: edge == .top ? "arrow.down" : "arrow.up"))
+        let image = UIImageView(image: UIImage(systemName: arrowSystemName))
         image.contentMode = .scaleAspectFit
         image.widthAnchor.constraint(equalToConstant: 18).isActive = true
         image.heightAnchor.constraint(equalToConstant: 18).isActive = true
@@ -122,14 +122,14 @@ public final class DefaultRefreshAnimator: RefreshAnimator {
         let angle: CGFloat = state == .armed && !UIAccessibility.isReduceMotionEnabled ? .pi : 0
         arrowView.transform = CGAffineTransform(rotationAngle: angle)
         var text: String = switch state {
-        case .idle, .pulling: edge == .top ? strings.pullToRefresh : strings.loadMore
+        case .idle, .pulling: edge.isRefresh ? strings.pullToRefresh : strings.loadMore
         case .armed: strings.releaseToRefresh
-        case .loading: edge == .top ? strings.refreshing : strings.loadingMore
+        case .loading: edge.isRefresh ? strings.refreshing : strings.loadingMore
         case .failed: strings.retry
         case .noMoreData: strings.noMoreData
         case .succeeded: strings.updated
         }
-        if edge == .top, let lastUpdated, state != .loading {
+        if edge.isRefresh, let lastUpdated, state != .loading {
             text += " · " + lastUpdated.formatted(date: .omitted, time: .shortened)
         }
         statusLabel.text = text
@@ -139,6 +139,21 @@ public final class DefaultRefreshAnimator: RefreshAnimator {
     public func stop() {
         spinner.stopAnimating()
         arrowView.layer.removeAllAnimations()
+    }
+
+    // MARK: - Private Methods
+
+    private var arrowSystemName: String {
+        switch edge {
+        case .top:
+            "arrow.down"
+        case .bottom:
+            "arrow.up"
+        case .leading:
+            "arrow.forward"
+        case .trailing:
+            "arrow.backward"
+        }
     }
 }
 

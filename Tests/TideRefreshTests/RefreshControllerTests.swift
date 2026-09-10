@@ -251,10 +251,141 @@ final class RefreshControllerTests: XCTestCase {
         controller.detach()
     }
 
+    func testHorizontalLTRUsesLeadingAndTrailingInsetsFramesAndOperations() throws {
+        let scroll = makeHorizontalScroll()
+        scroll.contentInset = UIEdgeInsets(top: 10, left: 12, bottom: 20, right: 18)
+        scroll.alwaysBounceVertical = true
+        let header = TestAnimator()
+        let footer = TestAnimator()
+        var refresh: RefreshOperation?
+        var loadMore: RefreshOperation?
+        let controller = try RefreshController(
+            scrollView: scroll,
+            axis: .horizontal,
+            headerAnimator: header,
+            footerAnimator: footer,
+            onRefresh: { refresh = $0 },
+            onLoadMore: { loadMore = $0 }
+        )
+
+        XCTAssertTrue(scroll.alwaysBounceHorizontal)
+        XCTAssertTrue(scroll.alwaysBounceVertical)
+        XCTAssertEqual(scroll.contentInset, UIEdgeInsets(top: 10, left: 12, bottom: 20, right: 62))
+        XCTAssertEqual(header.view.superview?.frame, CGRect(x: -60, y: 10, width: 60, height: 210))
+        XCTAssertEqual(footer.view.superview?.frame, CGRect(x: 1200, y: 10, width: 44, height: 210))
+
+        controller.beginRefreshing()
+        XCTAssertEqual(refresh?.edge, .leading)
+        XCTAssertEqual(scroll.contentInset.left, 72)
+        XCTAssertEqual(scroll.contentOffset.x, -72)
+        refresh?.finish()
+        controller.beginLoadingMore()
+        XCTAssertEqual(loadMore?.edge, .trailing)
+
+        controller.detach()
+        XCTAssertEqual(scroll.contentInset, UIEdgeInsets(top: 10, left: 12, bottom: 20, right: 18))
+        XCTAssertFalse(scroll.alwaysBounceHorizontal)
+        XCTAssertTrue(scroll.alwaysBounceVertical)
+    }
+
+    func testHorizontalRTLMirrorsEdgesAndPreservesHostInsetChanges() throws {
+        let scroll = makeHorizontalScroll(direction: .rightToLeft)
+        scroll.contentInset = UIEdgeInsets(top: 10, left: 12, bottom: 20, right: 18)
+        scroll.alwaysBounceVertical = true
+        let header = TestAnimator()
+        let footer = TestAnimator()
+        var refresh: RefreshOperation?
+        var loadMore: RefreshOperation?
+        let controller = try RefreshController(
+            scrollView: scroll,
+            axis: .horizontal,
+            headerAnimator: header,
+            footerAnimator: footer,
+            onRefresh: { refresh = $0 },
+            onLoadMore: { loadMore = $0 }
+        )
+
+        XCTAssertEqual(scroll.contentInset, UIEdgeInsets(top: 10, left: 56, bottom: 20, right: 18))
+        XCTAssertEqual(header.view.superview?.frame, CGRect(x: 1200, y: 10, width: 60, height: 210))
+        XCTAssertEqual(footer.view.superview?.frame, CGRect(x: -44, y: 10, width: 44, height: 210))
+
+        controller.beginRefreshing()
+        XCTAssertEqual(refresh?.edge, .leading)
+        XCTAssertEqual(scroll.contentInset.right, 78)
+        XCTAssertEqual(scroll.contentOffset.x, 888)
+        refresh?.finish()
+        controller.beginLoadingMore()
+        XCTAssertEqual(loadMore?.edge, .trailing)
+
+        scroll.contentInset.left += 7
+        scroll.contentInset.right += 5
+        controller.detach()
+        XCTAssertEqual(scroll.contentInset, UIEdgeInsets(top: 10, left: 19, bottom: 20, right: 23))
+        XCTAssertFalse(scroll.alwaysBounceHorizontal)
+        XCTAssertTrue(scroll.alwaysBounceVertical)
+    }
+
+    func testHorizontalShortContentFillUsesContentWidth() async throws {
+        let scroll = makeHorizontalScroll()
+        scroll.contentSize.width = 10
+        let loaded = expectation(description: "Horizontal short content fill")
+        let controller = try RefreshController(
+            scrollView: scroll,
+            axis: .horizontal,
+            configuration: .init(shortContentPageLimit: 1),
+            onRefresh: { $0.finish() },
+            onLoadMore: {
+                $0.finish(.success(hasMoreData: false))
+                loaded.fulfill()
+            }
+        )
+
+        controller.beginRefreshing()
+        await fulfillment(of: [loaded], timeout: 2)
+        XCTAssertEqual(controller.footerState, .noMoreData)
+        controller.detach()
+    }
+
+    func testHorizontalHandlerRemovalAndDetachIgnoreLateCompletion() throws {
+        let scroll = makeHorizontalScroll()
+        scroll.contentInset = UIEdgeInsets(top: 4, left: 6, bottom: 8, right: 10)
+        var refresh: RefreshOperation?
+        let controller = try RefreshController(
+            scrollView: scroll,
+            axis: .horizontal,
+            onRefresh: { refresh = $0 },
+            onLoadMore: { _ in }
+        )
+
+        XCTAssertEqual(scroll.contentInset.right, 54)
+        scroll.contentInset.right += 7
+        controller.onLoadMore = nil
+        XCTAssertEqual(scroll.contentInset.right, 17)
+
+        controller.beginRefreshing()
+        XCTAssertEqual(scroll.contentInset.left, 66)
+        scroll.contentInset.left += 5
+        controller.detach()
+        controller.detach()
+        refresh?.finish(.failure)
+
+        XCTAssertEqual(scroll.contentInset, UIEdgeInsets(top: 4, left: 11, bottom: 8, right: 17))
+        XCTAssertEqual(controller.headerState, .idle)
+        XCTAssertFalse(controller.isAttached)
+    }
+
     private func makeScroll() -> UIScrollView {
         let scroll = UIScrollView(frame: CGRect(x: 0, y: 0, width: 390, height: 600))
         scroll.contentInsetAdjustmentBehavior = .never
         scroll.contentSize = CGSize(width: 390, height: 1200)
+        return scroll
+    }
+
+    private func makeHorizontalScroll(direction: UIUserInterfaceLayoutDirection = .leftToRight) -> UIScrollView {
+        let scroll = UIScrollView(frame: CGRect(x: 0, y: 0, width: 390, height: 240))
+        scroll.contentInsetAdjustmentBehavior = .never
+        scroll.contentSize = CGSize(width: 1200, height: 240)
+        scroll.semanticContentAttribute = direction == .rightToLeft ? .forceRightToLeft : .forceLeftToRight
         return scroll
     }
 }
