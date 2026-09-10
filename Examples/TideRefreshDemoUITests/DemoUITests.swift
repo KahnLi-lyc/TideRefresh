@@ -110,6 +110,19 @@ final class DemoUITests: XCTestCase {
         capture("Frame animation", app: frames)
     }
 
+    func testTextFreeAnimatorGallery() {
+        for mode in ["spinner", "ring", "dots", "tide"] {
+            let app = launch(mode: mode, extraArguments: ["--hold-refresh"])
+            waitForStatus("Items: 20", in: app)
+            app.buttons["refresh-button"].tap()
+            waitForStatus("Refreshing", in: app)
+            capture("Animator \(mode)", app: app)
+            app.buttons["cancel-button"].tap()
+            waitForStatus("Cancelled", in: app)
+            app.terminate()
+        }
+    }
+
     func testResizePreservesData() {
         let app = launch(mode: "collection")
         waitForStatus("Items: 20", in: app)
@@ -211,9 +224,9 @@ final class DemoUITests: XCTestCase {
         capture("Network page detached", app: app)
     }
 
-    private func launch(mode: String) -> XCUIApplication {
+    private func launch(mode: String, extraArguments: [String] = []) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["--demo-mode", mode]
+        app.launchArguments = ["--demo-mode", mode] + extraArguments
         app.launch()
         return app
     }

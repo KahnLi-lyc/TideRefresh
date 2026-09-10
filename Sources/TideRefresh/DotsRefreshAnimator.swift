@@ -63,6 +63,11 @@ extension DotsRefreshAnimator: RefreshAnimator {
 
 @MainActor
 private final class DotsVisualView: UIView {
+    // MARK: - Private Properties
+
+    private var isLoading = false
+    private var reducesMotion = false
+
     // MARK: - Views
 
     private lazy var dotLayers: [CAShapeLayer] = (0 ..< 3).map { _ in
@@ -75,7 +80,9 @@ private final class DotsVisualView: UIView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        dotLayers.forEach(layer.addSublayer)
+        for dotLayer in dotLayers {
+            layer.addSublayer(dotLayer)
+        }
         updateColor()
     }
 
@@ -99,6 +106,15 @@ private final class DotsVisualView: UIView {
         updateColor()
     }
 
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            removeAnimations()
+        } else if isLoading {
+            applyLoadingAnimations()
+        }
+    }
+
     // MARK: - Public Methods
 
     override var intrinsicContentSize: CGSize {
@@ -113,9 +129,27 @@ private final class DotsVisualView: UIView {
     }
 
     func startLoading(reduceMotion: Bool) {
+        isLoading = true
+        reducesMotion = reduceMotion
+        applyLoadingAnimations()
+    }
+
+    func stopAnimating() {
+        isLoading = false
+        removeAnimations()
+    }
+
+    // MARK: - Private Methods
+
+    private func applyLoadingAnimations() {
         for (index, dotLayer) in dotLayers.enumerated() {
             dotLayer.opacity = 1
-            guard !reduceMotion, dotLayer.animation(forKey: "dot.pulse") == nil else { continue }
+            if reducesMotion {
+                dotLayer.removeAllAnimations()
+                dotLayer.transform = CATransform3DIdentity
+                continue
+            }
+            guard dotLayer.animation(forKey: "dot.pulse") == nil else { continue }
             let scale = CAKeyframeAnimation(keyPath: "transform.scale")
             scale.values = [0.65, 1, 0.65]
             scale.keyTimes = [0, 0.5, 1]
@@ -126,17 +160,17 @@ private final class DotsVisualView: UIView {
         }
     }
 
-    func stopAnimating() {
-        dotLayers.forEach {
-            $0.removeAllAnimations()
-            $0.transform = CATransform3DIdentity
+    private func removeAnimations() {
+        for dotLayer in dotLayers {
+            dotLayer.removeAllAnimations()
+            dotLayer.transform = CATransform3DIdentity
         }
     }
 
-    // MARK: - Private Methods
-
     private func updateColor() {
         let color = tintColor.resolvedColor(with: traitCollection).cgColor
-        dotLayers.forEach { $0.fillColor = color }
+        for dotLayer in dotLayers {
+            dotLayer.fillColor = color
+        }
     }
 }

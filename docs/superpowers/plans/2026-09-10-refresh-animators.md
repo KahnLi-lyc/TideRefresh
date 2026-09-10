@@ -17,10 +17,10 @@
 - Create: `Sources/TideRefresh/ActivityIndicatorRefreshAnimator.swift`
 - Create: `Tests/TideRefreshTests/RefreshAnimatorTests.swift`
 
-- [ ] Add failing tests for text-free loading, terminal symbols, accessibility, and idempotent stop.
-- [ ] Add `RefreshTerminalPresentation` and internal shared presentation utilities.
-- [ ] Implement `ActivityIndicatorRefreshAnimator` using `UIActivityIndicatorView`.
-- [ ] Run the focused animator tests and commit the passing stage.
+- [x] Add failing tests for text-free loading, terminal symbols, accessibility, and idempotent stop.
+- [x] Add `RefreshTerminalPresentation` and internal shared presentation utilities.
+- [x] Implement `ActivityIndicatorRefreshAnimator` using `UIActivityIndicatorView`.
+- [x] Run the focused animator tests and commit the passing stage.
 
 ### Task 2: Expressive Built-in Animators
 
@@ -30,10 +30,10 @@
 - Create: `Sources/TideRefresh/TideRefreshAnimator.swift`
 - Modify: `Tests/TideRefreshTests/RefreshAnimatorTests.swift`
 
-- [ ] Add failing state and animation tests for ring, dots, and tide styles.
-- [ ] Implement progress-driven pulling and indefinite loading presentations.
-- [ ] Honor Reduce Motion and stop all owned Core Animation resources.
-- [ ] Run the focused animator tests and commit the passing stage.
+- [x] Add failing state and animation tests for ring, dots, and tide styles.
+- [x] Implement progress-driven pulling and indefinite loading presentations.
+- [x] Honor Reduce Motion and stop all owned Core Animation resources.
+- [x] Run the focused animator tests and commit the passing stage.
 
 ### Task 3: Demo and Documentation
 
@@ -43,10 +43,10 @@
 - Modify: `Examples/TideRefreshDemoUITests/DemoUITests.swift`
 - Modify: `README.md`, `README.zh-Hans.md`, and DocC documentation.
 
-- [ ] Add runnable demo entries for all four animators using distinct header/footer instances.
-- [ ] Add UI coverage for opening and exercising each style.
-- [ ] Document public initializers, terminal behavior, accessibility, and the continued vertical-only scope.
-- [ ] Regenerate the Xcode project and run format, build, unit, and UI checks.
+- [x] Add runnable demo entries for all four animators using distinct header/footer instances.
+- [x] Add UI coverage for opening and exercising each style.
+- [x] Document public initializers, terminal behavior, accessibility, and the continued vertical-only scope.
+- [x] Update the Xcode project and run format, build, unit, UI, and documentation checks.
 
 ### Deferred: Horizontal Refresh and Pagination
 

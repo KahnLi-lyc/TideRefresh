@@ -5,6 +5,25 @@ The published 0.1.0-beta.1 tag is unchanged. This report does not declare 1.0 re
 
 ## Local Results
 
+The `codex/minimal-refresh-animators` feature was verified on 2026-09-10:
+
+| Check | Environment | Result |
+| --- | --- | --- |
+| Full XCTest and UI suite | iPhone 16 Pro, iOS 18.2, Xcode 27 | 64 passed |
+| Full XCTest and UI suite | iPad Pro 11-inch (M4), iPadOS 18.5, Xcode 27 | 64 passed |
+| Text-free animator UI scenarios | Both devices above | Spinner, ring, dots and tide passed while held in loading state |
+| iOS 16 device-target compilation | Swift 6 language mode, Swift 6.4 / Xcode 27 device SDK | Passed for the core and complete demo sources |
+| Documentation | Xcode 27 `xcodebuild docbuild` | Passed without DocC errors |
+| Style | SwiftFormat 0.61.1 and `git diff --check` | Passed |
+
+The new unit coverage verifies pull progress, loading animation ownership, repeated
+stop, hidden and symbolic terminal states, invalid progress, text-free output and
+footer accessibility state. Loading screenshots for all four styles were exported
+from the iPhone result bundle and visually inspected for layout and clipping.
+
+Xcode 16.2 / Swift 6.0 compilation remains assigned to CI because this host only
+has Xcode 27. The unavailable iOS 16 simulator runtime remains a 1.0 release gate.
+
 | Check | Environment | Result |
 | --- | --- | --- |
 | XCTest | iPhone 16, iOS 18.2, Xcode 27 beta | 40 passed |

@@ -8,6 +8,10 @@ enum DemoMode: String, CaseIterable {
     case pull
     case prefetch
     case frames
+    case spinner
+    case ring
+    case dots
+    case tide
     case network
 
     var title: String {
@@ -18,6 +22,10 @@ enum DemoMode: String, CaseIterable {
         case .pull: "Pull Footer"
         case .prefetch: "Prefetch Footer"
         case .frames: "Frame Animation"
+        case .spinner: "Activity Indicator"
+        case .ring: "Progress Ring"
+        case .dots: "Three Dots"
+        case .tide: "Tide"
         case .network: "Network Scenarios"
         }
     }
@@ -30,6 +38,10 @@ enum DemoMode: String, CaseIterable {
         case .pull: "arrow.up.to.line"
         case .prefetch: "arrow.down.forward.and.arrow.up.backward"
         case .frames: "photo.stack"
+        case .spinner: "progress.indicator"
+        case .ring: "circle.dotted"
+        case .dots: "ellipsis"
+        case .tide: "water.waves"
         case .network: "network"
         }
     }

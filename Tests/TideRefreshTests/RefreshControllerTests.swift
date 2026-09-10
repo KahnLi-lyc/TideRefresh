@@ -92,6 +92,20 @@ final class RefreshControllerTests: XCTestCase {
         controller.detach()
     }
 
+    func testFooterAccessibilityLabelTracksLoadingAndTerminalStates() throws {
+        let scroll = makeScroll()
+        let strings = RefreshStrings(loadMore: "Load", loadingMore: "Loading", noMoreData: "Complete")
+        var operation: RefreshOperation?
+        let controller = try RefreshController(scrollView: scroll, strings: strings, onLoadMore: { operation = $0 })
+        let footer = scroll.subviews.first { $0.isAccessibilityElement && $0.accessibilityTraits.contains(.button) }
+
+        controller.beginLoadingMore()
+        XCTAssertEqual(footer?.accessibilityLabel, "Loading")
+        operation?.finish(.success(hasMoreData: false))
+        XCTAssertEqual(footer?.accessibilityLabel, "Complete")
+        controller.detach()
+    }
+
     func testCancellationCallbackCanDetachWithoutStartingRefresh() throws {
         let scroll = makeScroll()
         var calls = 0

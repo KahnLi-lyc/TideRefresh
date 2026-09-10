@@ -66,6 +66,8 @@ private final class TideVisualView: UIView {
     // MARK: - Private Properties
 
     private var amplitude: CGFloat = 0
+    private var isLoading = false
+    private var reducesMotion = false
 
     // MARK: - Views
 
@@ -105,6 +107,15 @@ private final class TideVisualView: UIView {
         updateColor()
     }
 
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            waveLayer.removeAllAnimations()
+        } else if isLoading {
+            applyLoadingAnimation()
+        }
+    }
+
     // MARK: - Public Methods
 
     override var intrinsicContentSize: CGSize {
@@ -118,9 +129,26 @@ private final class TideVisualView: UIView {
     }
 
     func startLoading(reduceMotion: Bool) {
+        isLoading = true
+        reducesMotion = reduceMotion
         amplitude = 4
         waveLayer.path = wavePath(amplitude: amplitude, phase: 0)
-        guard !reduceMotion, waveLayer.animation(forKey: "tide.phase") == nil else { return }
+        applyLoadingAnimation()
+    }
+
+    func stopAnimating() {
+        isLoading = false
+        waveLayer.removeAllAnimations()
+    }
+
+    // MARK: - Private Methods
+
+    private func applyLoadingAnimation() {
+        if reducesMotion {
+            waveLayer.removeAllAnimations()
+            return
+        }
+        guard waveLayer.animation(forKey: "tide.phase") == nil else { return }
         let phase = CAKeyframeAnimation(keyPath: "path")
         phase.values = stride(from: 0, through: CGFloat.pi * 2, by: CGFloat.pi / 2).map {
             wavePath(amplitude: amplitude, phase: $0)
@@ -130,12 +158,6 @@ private final class TideVisualView: UIView {
         phase.calculationMode = .linear
         waveLayer.add(phase, forKey: "tide.phase")
     }
-
-    func stopAnimating() {
-        waveLayer.removeAllAnimations()
-    }
-
-    // MARK: - Private Methods
 
     private func wavePath(amplitude: CGFloat, phase: CGFloat) -> CGPath {
         let path = UIBezierPath()

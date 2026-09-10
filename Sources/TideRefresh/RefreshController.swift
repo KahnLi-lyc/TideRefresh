@@ -491,7 +491,7 @@ public final class RefreshController: NSObject {
             footerState = state
             footerAnimator.update(state: state, progress: progress)
             guard attached else { return }
-            footerView.accessibilityLabel = state == .failed ? strings.retry : (state == .noMoreData ? strings.noMoreData : strings.loadMore)
+            footerView.accessibilityLabel = state.accessibilityLabel(edge: .bottom, strings: strings)
         }
         guard attached else { return }
         if state == .armed, old != .armed, configuration.isHapticsEnabled {

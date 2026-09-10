@@ -71,8 +71,12 @@ stops pagination. Failed footers can be tapped to retry. Resetting controller
 pagination availability does not reset a coordinator's cursor.
 
 Use ``DefaultRefreshAnimator`` for localized labels, Dynamic Type, VoiceOver,
-Reduce Motion, and an optional last-updated time. ``FrameRefreshAnimator`` uses
-application-provided images without decoding GIF files. Custom ``RefreshAnimator``
+Reduce Motion, and an optional last-updated time. Text-free built-ins include
+``ActivityIndicatorRefreshAnimator``, ``RingRefreshAnimator``,
+``DotsRefreshAnimator``, and ``TideRefreshAnimator``. Their terminal states use
+``RefreshTerminalPresentation`` while retaining accessible localized state.
+``FrameRefreshAnimator`` uses application-provided images without decoding GIF
+files. Custom ``RefreshAnimator``
 conformances belong in extensions and provide one distinct view per edge, update
 state and progress, apply ``RefreshTheme`` / ``RefreshStrings``, and stop on detach.
 Progress may exceed one. Lottie is available only in a separate optional example
@@ -111,6 +115,11 @@ runtime verification remain release gates.
 
 - ``RefreshAnimator``
 - ``DefaultRefreshAnimator``
+- ``ActivityIndicatorRefreshAnimator``
+- ``RingRefreshAnimator``
+- ``DotsRefreshAnimator``
+- ``TideRefreshAnimator``
 - ``FrameRefreshAnimator``
+- ``RefreshTerminalPresentation``
 - ``RefreshTheme``
 - ``RefreshStrings``

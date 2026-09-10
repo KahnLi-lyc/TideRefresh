@@ -63,6 +63,11 @@ extension RingRefreshAnimator: RefreshAnimator {
 
 @MainActor
 private final class RingVisualView: UIView {
+    // MARK: - Private Properties
+
+    private var isLoading = false
+    private var reducesMotion = false
+
     // MARK: - Views
 
     private lazy var ringLayer: CAShapeLayer = {
@@ -101,6 +106,15 @@ private final class RingVisualView: UIView {
         updateColor()
     }
 
+    override func didMoveToWindow() {
+        super.didMoveToWindow()
+        if window == nil {
+            ringLayer.removeAllAnimations()
+        } else if isLoading {
+            applyLoadingAnimation()
+        }
+    }
+
     // MARK: - Public Methods
 
     override var intrinsicContentSize: CGSize {
@@ -114,22 +128,33 @@ private final class RingVisualView: UIView {
     }
 
     func startLoading(reduceMotion: Bool) {
+        isLoading = true
+        reducesMotion = reduceMotion
         ringLayer.strokeStart = 0.15
         ringLayer.strokeEnd = 0.9
-        guard !reduceMotion, ringLayer.animation(forKey: "ring.rotation") == nil else { return }
+        applyLoadingAnimation()
+    }
+
+    func stopAnimating() {
+        isLoading = false
+        ringLayer.removeAllAnimations()
+        ringLayer.transform = CATransform3DIdentity
+    }
+
+    // MARK: - Private Methods
+
+    private func applyLoadingAnimation() {
+        if reducesMotion {
+            ringLayer.removeAllAnimations()
+            return
+        }
+        guard ringLayer.animation(forKey: "ring.rotation") == nil else { return }
         let rotation = CABasicAnimation(keyPath: "transform.rotation.z")
         rotation.byValue = CGFloat.pi * 2
         rotation.duration = 1
         rotation.repeatCount = .infinity
         ringLayer.add(rotation, forKey: "ring.rotation")
     }
-
-    func stopAnimating() {
-        ringLayer.removeAllAnimations()
-        ringLayer.transform = CATransform3DIdentity
-    }
-
-    // MARK: - Private Methods
 
     private func updateColor() {
         ringLayer.strokeColor = tintColor.resolvedColor(with: traitCollection).cgColor

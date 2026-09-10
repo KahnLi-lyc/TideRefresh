@@ -261,37 +261,28 @@ let controller = try RefreshController(
 ## 主题、动画与辅助功能
 
 `DefaultRefreshAnimator` 包含箭头、系统加载指示器、状态文字和可选的 `lastUpdated`
-时间；时间不持久化。`FrameRefreshAnimator(frames:duration:)` 接收应用提供的 `UIImage`
-序列，不负责 GIF 解码。`configure(theme:strings:)` 更新颜色和自定义文字。内置英文、
+时间；时间不持久化。四种无文字内置样式分别是 `ActivityIndicatorRefreshAnimator`、
+`RingRefreshAnimator`、`DotsRefreshAnimator` 和 `TideRefreshAnimator`。
+`FrameRefreshAnimator(frames:duration:)` 接收应用提供的 `UIImage` 序列，不负责 GIF 解码。
+`configure(theme:strings:)` 更新颜色和自定义文字。内置英文、
 简体中文随应用本地化选择，支持 Dynamic Type、VoiceOver 操作与公告、减少动态效果、
 可关闭的阈值触觉反馈。
 
-自定义动画通过独立 extension 实现协议，示例可直接用于 `headerAnimator:`：
+header 和 footer 必须使用不同实例：
 
 ```swift
-import UIKit
 import TideRefresh
 
-@MainActor
-final class SpinnerAnimator {
-    private lazy var spinner = UIActivityIndicatorView(style: .medium)
-}
-
-extension SpinnerAnimator: RefreshAnimator {
-    var view: UIView { spinner }
-
-    func configure(theme: RefreshTheme, strings: RefreshStrings) {
-        spinner.color = theme.tintColor
-        spinner.accessibilityLabel = strings.refreshing
-    }
-
-    func update(state: RefreshState, progress: CGFloat) {
-        state == .loading ? spinner.startAnimating() : spinner.stopAnimating()
-    }
-
-    func stop() { spinner.stopAnimating() }
-}
+let controller = try RefreshController(
+    scrollView: tableView,
+    headerAnimator: RingRefreshAnimator(edge: .top),
+    footerAnimator: ActivityIndicatorRefreshAnimator(edge: .bottom)
+)
 ```
+
+四种样式均不显示状态文字。`RefreshTerminalPresentation.hidden` 在失败和没有更多数据时
+保持空白；`.symbols` 分别显示重试图标和短横线。两种策略都保留本地化辅助功能语义。
+系统菊花默认使用 `.hidden`，圆环、三点和潮汐默认使用 `.symbols`。
 
 拖动 `progress` 可超过 `1`，索引动画帧时应先限制范围。自定义动画应提供适当的辅助功能
 说明并遵循 Reduce Motion。`stop()` 在 detach 时释放临时动画资源。
@@ -303,8 +294,8 @@ extension SpinnerAnimator: RefreshAnimator {
 ## Demo 与验证
 
 打开 `Examples/TideRefreshDemo.xcodeproj`，选择 `TideRefreshDemo`，可在 iPhone、
-iPad、模拟器或真机运行。七个页面覆盖列表、网格、短内容补页、上拉 footer、预加载、
-序列帧、可控失败及 **Network Scenarios**。
+iPad、模拟器或真机运行。示例页面覆盖列表、网格、短内容补页、上拉 footer、预加载、
+序列帧、四种无文字样式、可控失败及 **Network Scenarios**。
 
 Network Scenarios 使用真实的临时 `URLSession` 发起请求，由本地 `URLProtocol` Mock
 返回 HTTP 响应，不访问公网。可选择场景和延迟，并通过工具栏执行刷新、加载更多、取消、

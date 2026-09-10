@@ -276,39 +276,31 @@ infer whether a replacement value intends to include that contribution.
 ## Appearance and Accessibility
 
 `DefaultRefreshAnimator` supplies an arrow, spinner, localized state labels, and
-an optional `lastUpdated` timestamp. `FrameRefreshAnimator(frames:duration:)`
-accepts application-provided `UIImage` frames; it does not decode GIF files.
+an optional `lastUpdated` timestamp. The text-free built-ins are
+`ActivityIndicatorRefreshAnimator`, `RingRefreshAnimator`, `DotsRefreshAnimator`,
+and `TideRefreshAnimator`. `FrameRefreshAnimator(frames:duration:)` accepts
+application-provided `UIImage` frames; it does not decode GIF files.
 `configure(theme:strings:)` reapplies semantic colors and custom labels. Built-in
 English and Simplified Chinese strings follow the application's localization.
 The built-in controls support Dynamic Type, VoiceOver actions/announcements,
 Reduce Motion, and configurable threshold haptics.
 
-For a custom animator, keep protocol conformance in an extension:
+Use distinct instances for the header and footer:
 
 ```swift
-import UIKit
 import TideRefresh
 
-@MainActor
-final class SpinnerAnimator {
-    private lazy var spinner = UIActivityIndicatorView(style: .medium)
-}
-
-extension SpinnerAnimator: RefreshAnimator {
-    var view: UIView { spinner }
-
-    func configure(theme: RefreshTheme, strings: RefreshStrings) {
-        spinner.color = theme.tintColor
-        spinner.accessibilityLabel = strings.refreshing
-    }
-
-    func update(state: RefreshState, progress: CGFloat) {
-        state == .loading ? spinner.startAnimating() : spinner.stopAnimating()
-    }
-
-    func stop() { spinner.stopAnimating() }
-}
+let controller = try RefreshController(
+    scrollView: tableView,
+    headerAnimator: RingRefreshAnimator(edge: .top),
+    footerAnimator: ActivityIndicatorRefreshAnimator(edge: .bottom)
+)
 ```
+
+All four styles render no status text. `RefreshTerminalPresentation.hidden` leaves
+failure and exhaustion visually empty; `.symbols` shows a retry icon and a short
+end marker. Accessible localized state remains available with either option. The
+activity indicator defaults to `.hidden`; ring, dots, and tide default to `.symbols`.
 
 Custom animators receive progress that can exceed `1`; clamp it when indexing
 frames. Provide appropriate accessibility and Reduce Motion behavior for custom
@@ -322,7 +314,7 @@ core or default-demo dependency.
 ## Demo and Verification
 
 Open `Examples/TideRefreshDemo.xcodeproj`, select `TideRefreshDemo`, and run on an
-iPhone, iPad, simulator, or physical device. The seven demo pages include
+iPhone, iPad, simulator, or physical device. The demo pages include
 table/collection layouts, short content, pull and prefetch footers, frame
 animation, deterministic failures, and **Network Scenarios**.
 

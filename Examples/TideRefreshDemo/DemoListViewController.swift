@@ -172,12 +172,11 @@ final class DemoListViewController: UIViewController {
     private func attachRefresh() {
         do {
             let scrollView: UIScrollView = mode == .collection ? collectionView : tableView
-            let animator: (any RefreshAnimator)? = mode == .frames
-                ? FrameRefreshAnimator(frames: makeFrames()) : nil
             let controller = try RefreshController(
                 scrollView: scrollView,
                 configuration: .init(loadMoreMode: mode.footerMode),
-                headerAnimator: animator
+                headerAnimator: makeAnimator(edge: .top),
+                footerAnimator: makeAnimator(edge: .bottom)
             )
             controller.setAsyncHandlers(
                 refresh: { [weak self] in
@@ -305,6 +304,23 @@ final class DemoListViewController: UIViewController {
                 symbol.withTintColor(.systemTeal, renderingMode: .alwaysOriginal)
                     .draw(in: CGRect(x: -12, y: -12, width: 24, height: 24))
             }
+        }
+    }
+
+    private func makeAnimator(edge: RefreshEdge) -> (any RefreshAnimator)? {
+        switch mode {
+        case .frames:
+            edge == .top ? FrameRefreshAnimator(frames: makeFrames()) : nil
+        case .spinner:
+            ActivityIndicatorRefreshAnimator(edge: edge)
+        case .ring:
+            RingRefreshAnimator(edge: edge)
+        case .dots:
+            DotsRefreshAnimator(edge: edge)
+        case .tide:
+            TideRefreshAnimator(edge: edge)
+        case .table, .collection, .short, .pull, .prefetch, .network:
+            nil
         }
     }
 
